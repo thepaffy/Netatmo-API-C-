@@ -5,7 +5,6 @@
 #include <cctype>
 #include <iomanip>
 #include <curl/curl.h>
-#include <cassert>
 
 using namespace std;
 
