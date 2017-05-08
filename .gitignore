@@ -43,3 +43,4 @@ CTestTestfile.cmake
 
 # QtCtreator CMake
 CMakeLists.txt.user*
+*.autosave

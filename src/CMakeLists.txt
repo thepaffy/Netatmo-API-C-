@@ -20,6 +20,9 @@ file(GLOB netatmoapi_HDRS
     station.h
     module.h
     measures.h
+    loginexception.hpp
+    curlexception.hpp
+    responseexception.hpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${netatmoapi_SRCS})

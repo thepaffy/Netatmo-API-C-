@@ -10,6 +10,9 @@
 #include <nlohmann/json.hpp>
 
 #include "measures.h"
+#include "loginexception.hpp"
+#include "curlexception.hpp"
+#include "responseexception.hpp"
 
 using json = nlohmann::json;
 
@@ -100,6 +103,8 @@ protected:
     static const std::string sUrlGetMeasure;
 
 private:
+    std::string buildQuery(const std::map<std::string, std::string> &params, char separator);
+    std::string urlEncode(const std::string &toEncode);
     std::unique_ptr<NAApiClientPrivate> const m;
 };
 
