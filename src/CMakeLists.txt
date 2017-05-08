@@ -10,6 +10,7 @@ find_package(nlohmann_json)
 
 file(GLOB netatmoapi_SRCS
     naapiclient.cpp
+    nawsapiclient.cpp
     station.cpp
     module.cpp
     measures.cpp
@@ -17,6 +18,7 @@ file(GLOB netatmoapi_SRCS
 
 file(GLOB netatmoapi_HDRS
     naapiclient.h
+    nawsapiclient.h
     station.h
     module.h
     measures.h

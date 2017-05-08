@@ -63,6 +63,7 @@ public:
     };
 
     NAApiClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret, const std::string &accessToken = std::string(), const std::string &refreshToken = std::string());
+    ~NAApiClient();
 
     std::string username() const;
     void setUsername(const std::string &username);

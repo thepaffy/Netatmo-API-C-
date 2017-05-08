@@ -48,6 +48,8 @@ NAApiClient::NAApiClient(const string &username, const string &password, const s
     m->mExpiresIn = 0;
 }
 
+NAApiClient::~NAApiClient() = default;
+
 string NAApiClient::username() const {
     return m->mUsername;
 }
