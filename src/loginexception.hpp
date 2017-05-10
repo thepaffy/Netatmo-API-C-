@@ -4,6 +4,8 @@
 #include <exception>
 #include <string>
 
+namespace netatmoapi {
+
 class LoginException: public std::exception {
 public:
     LoginException(const std::string &what) :
@@ -20,5 +22,7 @@ public:
 private:
     std::string mWhat;
 };
+
+}
 
 #endif /* LOGINEXCEPTION_HPP */

@@ -4,6 +4,8 @@
 #include <exception>
 #include <string>
 
+namespace netatmoapi {
+
 class CurlException: public std::exception {
 public:
     CurlException(const std::string &what) {
@@ -20,5 +22,7 @@ public:
 private:
     std::string mWhat;
 };
+
+}
 
 #endif /* CURLEXCEPTION_HPP */
