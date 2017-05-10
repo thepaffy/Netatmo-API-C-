@@ -37,7 +37,6 @@ public:
         co2,
         humidity,
         pressure,
-        noise,
         rain,
         windStrength,
         windAngle,
@@ -45,21 +44,9 @@ public:
         gustAngle,
         minTemperature,
         maxTemperature,
-        minHumidity,
-        maxHumidity,
-        minPressure,
-        maxPressure,
-        minNoise,
-        maxNoise,
-        sumRain,
-        dateMaxGust,
-        dateMaxHumifity,
-        dateMinPressure,
-        dateMaxPressure,
-        dateMinNoise,
-        dateMaxNoise,
-        dateMinCo2,
-        dateMaxCo2
+        pressureTrend12,
+        sumRain1,
+        sumRain24
     };
 
     NAApiClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret, const std::string &accessToken = std::string(), const std::string &refreshToken = std::string());

@@ -1,7 +1,7 @@
 #ifndef STATION_H
 #define STATION_H
 
-#include <list>
+#include <unordered_map>
 #include <string>
 
 #include "module.h"
@@ -10,20 +10,17 @@ namespace netatmoapi {
 
 class Station {
 public:
-    Station(const std::string &name, const std::string &id);
+    Station(const std::string &id);
 
-    std::string name() const { return mName; }
-    void setName(const std::string &name);
     std::string id() const { return mId; }
     void setId(const std::string &id);
-    std::list<Module> modules() const { return mModules; }
-    void setModules(const std::list<Module> &modules);
-    void addModule(const Module &module);
+    std::unordered_map<std::string, Module> modules() const { return mModules; }
+    void setModules(const std::unordered_map<std::string, Module> &modules);
+    void addModule(const std::string &moduleId, const Module &module);
 
 private:
-    std::string mName;
     std::string mId;
-    std::list<Module> mModules;
+    std::unordered_map<std::string, Module> mModules;
 };
 
 }

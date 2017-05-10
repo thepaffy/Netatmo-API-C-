@@ -29,4 +29,7 @@ file(GLOB netatmoapi_HDRS
 
 add_library(${PROJECT_NAME} SHARED ${netatmoapi_SRCS})
 
-target_link_libraries(${PROJECT_NAME} curl)
+target_link_libraries(${PROJECT_NAME} PRIVATE curl)
+
+install(TARGETS ${PROJECT_NAME} DESTINATION "lib")
+install(FILES ${netatmoapi_HDRS} DESTINATION "include/netatmo++")
