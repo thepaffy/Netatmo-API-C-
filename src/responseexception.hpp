@@ -4,6 +4,8 @@
 #include <exception>
 #include <string>
 
+namespace netatmoapi {
+
 class ResponseException: public std::exception {
 public:
     ResponseException(const std::string &what) {
@@ -20,5 +22,7 @@ public:
 private:
     std::string mWhat;
 };
+
+}
 
 #endif /* RESPONSEEXCEPTION_HPP */
