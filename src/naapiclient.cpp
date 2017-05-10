@@ -48,6 +48,8 @@ NAApiClient::NAApiClient(const string &username, const string &password, const s
     m->mExpiresIn = 0;
 }
 
+NAApiClient::~NAApiClient() = default;
+
 string NAApiClient::username() const {
     return m->mUsername;
 }
@@ -207,91 +209,58 @@ unordered_map<uint64_t, Measures> NAApiClient::requestMeasures(const string &dev
             uint64_t key;
             iss >> key;
             Measures measures;
+            measures.setTimeStamp(key);
             json jsonValues = it.value(); // Values array
             json::const_iterator itValues;
             list<Type>::const_iterator itTypes;
             for (itValues = jsonValues.cbegin(), itTypes = types.cbegin(); itValues != jsonValues.cend() || itTypes != types.cend(); ++itValues, ++itTypes) {   // Iterate over types and json array to get measures
                 switch (*itTypes) {
                 case temperature:
-                    measures.temperature = *itValues;
+                    measures.setTemperature(*itValues);
                     break;
                 case co2:
-                    measures.co2 = *itValues;
+                    measures.setCo2(*itValues);
                     break;
                 case humidity:
-                    measures.humidity = *itValues;
+                    measures.setHumidity(*itValues);
                     break;
                 case pressure:
-                    measures.pressure = *itValues;
-                    break;
-                case noise:
-                    measures.noise = *itValues;
+                    measures.setPressure(*itValues);
                     break;
                 case rain:
-                    measures.rain = *itValues;
+                    measures.setRain(*itValues);
                     break;
                 case windStrength:
-                    measures.windStrength = *itValues;
+                    measures.setWindStrength(*itValues);
                     break;
                 case windAngle:
-                    measures.windAngle = *itValues;
+                    measures.setWindAngle(*itValues);
                     break;
                 case gustStrength:
-                    measures.gustStrength = *itValues;
+                    measures.setGustStrength(*itValues);
                     break;
                 case gustAngle:
-                    measures.gustAngle = *itValues;
+                    measures.setGustAngle(*itValues);
                     break;
                 case minTemperature:
-                    measures.minTemperature = *itValues;
+                    measures.setMinTemperature(*itValues);
+                    ++itValues;
+                    measures.setTimeStampMinTemp(*itValues);
                     break;
                 case maxTemperature:
-                    measures.maxTemperature = *itValues;
+                    measures.setMaxTemperature(*itValues);
+                    ++itValues;
+                    measures.setTimeStampMaxTemp(*itValues);
                     break;
-                case minHumidity:
-                    measures.minHumidity = *itValues;
+                case pressureTrend12:
+                    measures.setPressureTrend12(Measures::convertPressureTrendFromString(*itValues));
                     break;
-                case maxHumidity:
-                    measures.maxHumidity = *itValues;
+                case sumRain1:
+                    measures.setSumRain1(*itValues);
                     break;
-                case minPressure:
-                    measures.minPressure = *itValues;
+                case sumRain24:
+                    measures.setSumRain24(*itValues);
                     break;
-                case maxPressure:
-                    measures.maxPressure = *itValues;
-                    break;
-                case minNoise:
-                    measures.minNoise = *itValues;
-                    break;
-                case maxNoise:
-                    measures.maxNoise = *itValues;
-                    break;
-                case sumRain:
-                    measures.sumRain = *itValues;
-                    break;
-                case dateMaxGust:
-                    measures.dateMaxGust = *itValues;
-                    break;
-                case dateMaxHumifity:
-                    measures.dateMaxHumidity = *itValues;
-                    break;
-                case dateMinPressure:
-                    measures.dateMinPressure = *itValues;
-                    break;
-                case dateMaxPressure:
-                    measures.dateMaxPressure = *itValues;
-                    break;
-                case dateMinNoise:
-                    measures.dateMinNoise = *itValues;
-                    break;
-                case dateMaxNoise:
-                    measures.dateMaxNoise = *itValues;
-                    break;
-                case dateMinCo2:
-                    measures.dateMinCo2 = *itValues;
-                    break;
-                case dateMaxCo2:
-                    measures.dateMaxCo2 = *itValues;
                 }
             }
             measuresMap.emplace(key, measures);
@@ -300,7 +269,6 @@ unordered_map<uint64_t, Measures> NAApiClient::requestMeasures(const string &dev
 
     return measuresMap;
 }
-
 
 json NAApiClient::get(const string &url, const std::map<string, string> &params) {
     CURL *curl;
@@ -402,7 +370,6 @@ string NAApiClient::typesToString(const list<Type> &types) const {
 }
 
 string NAApiClient::typeToString(Type type) const {
-    // Strings taken from https://dev.netatmo.com/resources/technical/reference/common/getmeasure
     switch (type) {
     case temperature:
         return "Temperature";
@@ -412,8 +379,6 @@ string NAApiClient::typeToString(Type type) const {
         return "Humidity";
     case pressure:
         return "Pressure";
-    case noise:
-        return "Noise";
     case rain:
         return "Rain";
     case windStrength:
@@ -425,39 +390,15 @@ string NAApiClient::typeToString(Type type) const {
     case gustAngle:
         return "GustAngle";
     case minTemperature:
-        return "min_temp";
+        return "min_temp,date_min_temp";    // Yes, that's ugly.
     case maxTemperature:
-        return "max_temp";
-    case minHumidity:
-        return "min_hum";
-    case maxHumidity:
-        return "max_hum";
-    case minPressure:
-        return "min_pressure";
-    case maxPressure:
-        return "max_pressure";
-    case minNoise:
-        return "min_noise";
-    case maxNoise:
-        return "max_noise";
-    case sumRain:
-        return "sum_rain";
-    case dateMaxGust:
-        return "date_max_gust";
-    case dateMaxHumifity:
-        return "date_max_hum";
-    case dateMinPressure:
-        return "date_min_pressure";
-    case dateMaxPressure:
-        return "date_max_pressure";
-    case dateMinNoise:
-        return "date_min_noise";
-    case dateMaxNoise:
-        return "date_max_noise";
-    case dateMinCo2:
-        return "date_min_co2";
-    case dateMaxCo2:
-        return "date_max_co2";
+        return "max_temp,date_max_temp";    // Yes, that's ugly.
+    case pressureTrend12:
+        return "pressure_trend";
+    case sumRain1:
+        return "sum_rain_1";
+    case sumRain24:
+        return "sum_rain_24";
     }
 }
 

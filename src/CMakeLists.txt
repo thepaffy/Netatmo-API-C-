@@ -10,6 +10,7 @@ find_package(nlohmann_json)
 
 file(GLOB netatmoapi_SRCS
     naapiclient.cpp
+    nawsapiclient.cpp
     station.cpp
     module.cpp
     measures.cpp
@@ -17,6 +18,7 @@ file(GLOB netatmoapi_SRCS
 
 file(GLOB netatmoapi_HDRS
     naapiclient.h
+    nawsapiclient.h
     station.h
     module.h
     measures.h
@@ -27,4 +29,7 @@ file(GLOB netatmoapi_HDRS
 
 add_library(${PROJECT_NAME} SHARED ${netatmoapi_SRCS})
 
-target_link_libraries(${PROJECT_NAME} curl)
+target_link_libraries(${PROJECT_NAME} PRIVATE curl)
+
+install(TARGETS ${PROJECT_NAME} DESTINATION "lib")
+install(FILES ${netatmoapi_HDRS} DESTINATION "include/netatmo++")

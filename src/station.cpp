@@ -1,26 +1,23 @@
 #include "station.h"
 
+using namespace std;
+
 namespace netatmoapi {
 
-Station::Station(const std::string &name, const std::string &id) {
-    mName = name;
+Station::Station(const string &id) {
     mId = id;
 }
 
-void Station::setName(const std::string &name) {
-    mName = name;
-}
-
-void Station::setId(const std::string &id) {
+void Station::setId(const string &id) {
     mId = id;
 }
 
-void Station::setModules(const std::list<Module> &modules) {
+void Station::setModules(const unordered_map<string, Module> &modules) {
     mModules = modules;
 }
 
-void Station::addModule(const Module &module) {
-    mModules.emplace_back(module);
+void Station::addModule(const string &moduleId, const Module &module) {
+    mModules.emplace(moduleId, module);
 }
 
 }
