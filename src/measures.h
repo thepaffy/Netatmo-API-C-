@@ -12,7 +12,7 @@ namespace netatmoapi {
 class Measures {
 public:
     /**
-     * Enum for pressure trend.
+     * @brief Enum for pressure trend.
      */
     enum PressureTrend {
         //! No pressure trend data provided or state is unknown.

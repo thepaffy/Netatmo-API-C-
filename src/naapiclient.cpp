@@ -127,7 +127,14 @@ void NAApiClient::login() {
     params.emplace("username", username());
     params.emplace("password", password());
 
-    json response = post(NAApiClient::sUrlRequestToken, params);
+    json response;
+    try {
+        response = post(NAApiClient::sUrlRequestToken, params);
+    } catch (const exception &ex) {
+        cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
+        cerr << "Error: " << ex.what() << "\n";
+        throw;
+    }
 
     if (response.find("access_token") != response.end()) {
         setAccessToken(response["access_token"]);
@@ -157,7 +164,15 @@ void NAApiClient::updateSession() {
     params.emplace("client_id", clientId());
     params.emplace("client_secret", clientSecret());
 
-    json response = post(NAApiClient::sUrlRequestToken, params);
+    json response;
+
+    try {
+        response = post(NAApiClient::sUrlRequestToken, params);
+    } catch (const exception &ex) {
+        cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
+        cerr << "Error: " << ex.what() << "\n";
+        throw;
+    }
 
     if(response.find("access_token") != response.end()) {
         setAccessToken(response["access_token"]);
