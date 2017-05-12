@@ -224,7 +224,7 @@ public:
      * @param types The measure types to request.
      * @param dateBegin The beginning timetamp for the measures.
      * @param dateEnd The ending timestamp for the measures.
-     * @return A std::unorderd_map with the measures time stamp as id and the Measures as value.
+     * @return A std::unorderd_map with the measures time stamp as key and the Measures as value.
      * @throw LoginException Rethrown from updateSession().
      * @throw CurlException Rethrown from updateSession() and post().
      * @throw ResponseException Rethrown from updateSession() and post().
