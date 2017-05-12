@@ -25,7 +25,6 @@ public:
      */
     NAWSApiClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret, const std::string &accessToken = std::string(), const std::string &refreshToken = std::string());
 
-    //! \todo Set default values for deviceId and getFavorites
     /**
      * Requests data from the users weather stations via the netatmo get stationsdata api.
      * @param deviceId Weather station mac address

@@ -108,7 +108,6 @@ public:
      * @param refreshToken The refresh token, e.g. restored from disk.
      */
     NAApiClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret, const std::string &accessToken = std::string(), const std::string &refreshToken = std::string());
-    ~NAApiClient();
 
     /**
      * Destructor

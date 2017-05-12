@@ -20,7 +20,7 @@ public:
      * Constructor.
      * @param id The station id (MAC-Address).
      */
-    explicit Station(const std::string &id);  //! \todo make explicit.
+    explicit Station(const std::string &id);
 
     /**
      * Returns the id of the station.
