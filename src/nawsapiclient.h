@@ -25,6 +25,7 @@ public:
      */
     NAWSApiClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret, const std::string &accessToken = std::string(), const std::string &refreshToken = std::string());
 
+    //! \todo Set default values for deviceId and getFavorites
     /**
      * Requests data from the users weather stations via the netatmo get stationsdata api.
      * @param deviceId Weather station mac address
@@ -53,7 +54,7 @@ public:
     /**
      * Requests the measures for the specified wind gauge via the netatmo get measures api.
      * @param deviceId The device id for the specific device.
-     * @param rainGaugeId The wind gauge module id for the specific module.
+     * @param windGaugeId The wind gauge module id for the specific module.
      * @param scale The scale for the measures.
      * @param dateBegin The beginning timetamp for the measures.
      * @param dateEnd The ending timestamp for the measures.

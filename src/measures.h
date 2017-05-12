@@ -62,7 +62,7 @@ public:
 
     /**
      * Sets the timestamp of the max temperature.
-     * @param timeStampMinTemp The timestamp.
+     * @param timeStampMaxTemp The timestamp.
      */
     void setTimeStampMaxTemp(std::uint64_t timeStampMaxTemp);
 

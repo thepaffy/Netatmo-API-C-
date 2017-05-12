@@ -6,6 +6,11 @@
 
 namespace netatmoapi {
 
+/**
+ * @brief This exception is thrown if the curl perform method returns a error code.
+ *
+ * The error code is part of the what message.
+ */
 class CurlException: public std::exception {
 public:
     CurlException(const std::string &what) {
