@@ -10,7 +10,7 @@ class NAWSApiClient: public NAApiClient {
 public:
     NAWSApiClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret, const std::string &accessToken = std::string(), const std::string &refreshToken = std::string());
 
-    std::unordered_map<std::string, Station> requestStationsData(const std::string &deviceId, bool getFavorites);
+    std::unordered_map<std::string, Station> requestStationsData(const std::string &deviceId = std::string(), bool getFavorites = false);
     std::unordered_map<std::uint64_t, Measures> requestRainMeasures(const std::string &deviceId, const std::string &rainGaugeId, Scale scale, std::uint64_t dateBegin = 0, std::uint64_t dateEnd = 0);
     std::unordered_map<std::uint64_t, Measures> requestWindMeasures(const std::string &deviceId, const std::string &windGaugeId, Scale scale, std::uint64_t dateBegin = 0, std::uint64_t dateEnd = 0);
 

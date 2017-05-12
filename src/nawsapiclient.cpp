@@ -24,8 +24,12 @@ unordered_map<string, Station> NAWSApiClient::requestStationsData(const string &
 
     map<string, string> params;
     params.emplace("access_token", accessToken());
-    params.emplace("device_id", deviceId);
-    params.emplace("get_favorites", getFavorites ? "true" : "false");
+    if (!deviceId.empty()) {
+        params.emplace("device_id", deviceId);
+    }
+    if (getFavorites) {
+        params.emplace("get_favorites", "true");
+    }
 
     json response;
 
@@ -73,7 +77,7 @@ unordered_map<uint64_t, Measures> NAWSApiClient::requestRainMeasures(const strin
 }
 
 unordered_map<uint64_t, Measures> NAWSApiClient::requestWindMeasures(const string &deviceId, const string &windGaugeId, Scale scale, uint64_t dateBegin, uint64_t dateEnd) {
-    list<Type> types = { windStrength, windAngle, gustStrength, gustAngle };
+    list<Type> types { windStrength, windAngle, gustStrength, gustAngle };
     return requestMeasures(deviceId, windGaugeId, scale, types, dateBegin, dateEnd);
 }
 

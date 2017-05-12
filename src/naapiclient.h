@@ -82,17 +82,17 @@ protected:
     json get(const std::string &url, const std::map<std::string, std::string> &params);
     json post(const std::string &url, const std::map<std::string, std::string> &params);
 
-    std::string scaleToString(Scale scale) const;
-    std::string typesToString(const std::list<Type> &types) const;
-    std::string typeToString(Type type) const;
+    static std::string scaleToString(Scale scale);
+    static std::string typesToString(const std::list<Type> &types);
+    static std::string typeToString(Type type);
 
     static const std::string sUrlBase;
     static const std::string sUrlRequestToken;
     static const std::string sUrlGetMeasure;
 
 private:
-    std::string buildQuery(const std::map<std::string, std::string> &params, char separator);
-    std::string urlEncode(const std::string &toEncode);
+    static std::string buildQuery(const std::map<std::string, std::string> &params, char separator);
+    static std::string urlEncode(const std::string &toEncode);
     std::unique_ptr<NAApiClientPrivate> const m;
 };
 

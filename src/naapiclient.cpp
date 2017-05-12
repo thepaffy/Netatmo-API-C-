@@ -337,7 +337,7 @@ json NAApiClient::post(const string &url, const std::map<string, string> &params
     return jsonResponse;
 }
 
-string NAApiClient::scaleToString(Scale scale) const {
+string NAApiClient::scaleToString(Scale scale) {
     switch (scale) {
     case thirtyMinutes:
         return "30min";
@@ -356,7 +356,7 @@ string NAApiClient::scaleToString(Scale scale) const {
     }
 }
 
-string NAApiClient::typesToString(const list<Type> &types) const {
+string NAApiClient::typesToString(const list<Type> &types) {
     string type;
 
     for (auto it = types.cbegin(); it != types.cend(); ++it) {
@@ -369,7 +369,7 @@ string NAApiClient::typesToString(const list<Type> &types) const {
     return type;
 }
 
-string NAApiClient::typeToString(Type type) const {
+string NAApiClient::typeToString(Type type) {
     switch (type) {
     case temperature:
         return "Temperature";
