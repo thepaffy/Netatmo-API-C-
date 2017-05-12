@@ -1,4 +1,9 @@
 # Netatmo-API-CPP
+## Requirements:
+- cmake >= 3.1.0
+- C++ compiler and STL with C++14 support.
+- libcurl
+- [nlohmann/json](https://github.com/nlohmann/json/ "JSON for Modern C++")
 
 ## How to build:
 Clone repo and make build folder:
