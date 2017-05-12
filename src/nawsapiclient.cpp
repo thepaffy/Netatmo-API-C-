@@ -24,8 +24,12 @@ unordered_map<string, Station> NAWSApiClient::requestStationsData(const string &
 
     map<string, string> params;
     params.emplace("access_token", accessToken());
-    params.emplace("device_id", deviceId);
-    params.emplace("get_favorites", getFavorites ? "true" : "false");
+    if (!deviceId.empty()) {
+        params.emplace("device_id", deviceId);
+    }
+    if (getFavorites) {
+        params.emplace("get_favorites", "true");
+    }
 
     json response;
 

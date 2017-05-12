@@ -10,7 +10,7 @@ namespace netatmoapi {
 
 class Station {
 public:
-    Station(const std::string &id);
+    explicit Station(const std::string &id);
 
     std::string id() const { return mId; }
     void setId(const std::string &id);
