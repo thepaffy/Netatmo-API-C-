@@ -77,7 +77,7 @@ unordered_map<uint64_t, Measures> NAWSApiClient::requestRainMeasures(const strin
 }
 
 unordered_map<uint64_t, Measures> NAWSApiClient::requestWindMeasures(const string &deviceId, const string &windGaugeId, Scale scale, uint64_t dateBegin, uint64_t dateEnd) {
-    list<Type> types = { windStrength, windAngle, gustStrength, gustAngle };
+    list<Type> types { windStrength, windAngle, gustStrength, gustAngle };
     return requestMeasures(deviceId, windGaugeId, scale, types, dateBegin, dateEnd);
 }
 
