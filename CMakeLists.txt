@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.1.0)
 project(netatmoapi++)
 
 add_subdirectory(src)
+add_subdirectory(example)
 
 # add a target to generate API documentation with Doxygen
 find_package(Doxygen)
@@ -26,6 +27,4 @@ if(BUILD_DOCUMENTATION)
 
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/netatmo++-html DESTINATION doc OPTIONAL)
     install(FILES ${doxygen_error} DESTINATION doc OPTIONAL)
-
 endif()
-

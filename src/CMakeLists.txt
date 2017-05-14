@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1.0)
 
-include_directories (${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
