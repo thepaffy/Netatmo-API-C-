@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017 Christian Paffhausen, <https://github.com/thepaffy/>
+ *
  * This file is part of Netatmo-API-CPP.
  *
  * Netatmo-API-CPP is free software: you can redistribute it and/or modify
@@ -19,6 +21,10 @@
 using namespace std;
 
 namespace netatmoapi {
+
+Station::Station() {
+
+}
 
 Station::Station(const string &id) {
     mId = id;

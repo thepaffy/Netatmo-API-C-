@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017 Christian Paffhausen, <https://github.com/thepaffy/>
+ *
  * This file is part of Netatmo-API-CPP.
  *
  * Netatmo-API-CPP is free software: you can redistribute it and/or modify
@@ -53,6 +55,18 @@ const string NAApiClient::sUrlBase = "https://api.netatmo.net";
 const string NAApiClient::sUrlRequestToken = NAApiClient::sUrlBase + "/oauth2/token";
 const string NAApiClient::sUrlGetMeasure = NAApiClient::sUrlBase + "/api/getmeasure";
 
+NAApiClient::NAApiClient() :
+    m(new NAApiClientPrivate) {
+    m->mExpiresIn = 0;
+}
+
+NAApiClient::NAApiClient(const string &clientId, const string &clientSecret) :
+    m(new NAApiClientPrivate) {
+    m->mClientId = clientId;
+    m->mClientSecret = clientSecret;
+    m->mExpiresIn = 0;
+}
+
 NAApiClient::NAApiClient(const string &username, const string &password, const string &clientId, const string &clientSecret, const string &accessToken, const string &refreshToken) :
     m(new NAApiClientPrivate) {
     m->mUsername = username;
@@ -62,6 +76,17 @@ NAApiClient::NAApiClient(const string &username, const string &password, const s
     m->mAccessToken = accessToken;
     m->mRefreshToken = refreshToken;
     m->mExpiresIn = 0;
+}
+
+NAApiClient::NAApiClient(const NAApiClient &other) :
+    m(new NAApiClientPrivate) {
+    m->mUsername = other.m->mUsername;
+    m->mPassword = other.m->mPassword;
+    m->mClientId = other.m->mClientId;
+    m->mClientSecret = other.m->mClientSecret;
+    m->mAccessToken = other.m->mAccessToken;
+    m->mRefreshToken = other.m->mRefreshToken;
+    m->mExpiresIn = other.m->mExpiresIn;
 }
 
 NAApiClient::~NAApiClient() = default;
@@ -124,16 +149,16 @@ void NAApiClient::setExpiresIn(uint64_t expiresIn) {
 
 void NAApiClient::login() {
     if (username().empty()) {
-        throw LoginException("Username not set.");
+        throw LoginException("Username not set.", LoginException::username);
     }
     if (password().empty()) {
-        throw LoginException("Password not set.");
+        throw LoginException("Password not set.", LoginException::password);
     }
     if (clientId().empty()) {
-        throw LoginException("Client id not set.");
+        throw LoginException("Client id not set.", LoginException::clientId);
     }
     if (clientSecret().empty()) {
-        throw LoginException("Client secret not set.");
+        throw LoginException("Client secret not set.", LoginException::clientSecret);
     }
 
     map<string, string> params;
@@ -165,13 +190,13 @@ void NAApiClient::login() {
 
 void NAApiClient::updateSession() {
     if (refreshToken().empty()) {
-        throw LoginException("Not logged in.");
+        throw LoginException("Not logged in.", LoginException::refreshToken);
     }
     if (clientId().empty()) {
-        throw LoginException("Client id not set.");
+        throw LoginException("Client id not set.", LoginException::clientId);
     }
     if (clientSecret().empty()) {
-        throw LoginException("Client secret not set.");
+        throw LoginException("Client secret not set.", LoginException::clientSecret);
     }
 
     map<string, string> params;
@@ -316,9 +341,7 @@ json NAApiClient::get(const string &url, const std::map<string, string> &params)
         curl_easy_setopt(curl, CURLOPT_FILE, &rawResponse);
         res = curl_easy_perform(curl);
         if (res != CURLE_OK) {
-            string what = "Curl error: ";
-            what.push_back((int) res);
-            throw CurlException(what);
+            throw CurlException("Curl error", (int) res);
         }
         curl_easy_cleanup(curl);
     }
@@ -327,8 +350,7 @@ json NAApiClient::get(const string &url, const std::map<string, string> &params)
     json jsonResponse = json::parse(rawResponse.str());
 
     if (jsonResponse.find("error") != jsonResponse.end()) {
-        string error = jsonResponse["error"];
-        throw ResponseException(error);
+        throw ResponseException("Netatmo response error", jsonResponse["error"]);
     }
 
     return jsonResponse;
@@ -350,9 +372,7 @@ json NAApiClient::post(const string &url, const std::map<string, string> &params
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postField.c_str());
         res = curl_easy_perform(curl);
         if (res != CURLE_OK) {
-            string what = "Curl error: ";
-            what.push_back((int) res);
-            throw CurlException(what);
+            throw CurlException("Curl error", (int) res);
         }
         curl_easy_cleanup(curl);
     }
@@ -361,8 +381,7 @@ json NAApiClient::post(const string &url, const std::map<string, string> &params
     json jsonResponse = json::parse(rawResponse.str());
 
     if (jsonResponse.find("error") != jsonResponse.end()) {
-        string error = jsonResponse["error"];
-        throw ResponseException(error);
+        throw ResponseException("Netatmo response error", jsonResponse["error"]);
     }
 
     return jsonResponse;

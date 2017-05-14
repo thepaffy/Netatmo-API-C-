@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017 Christian Paffhausen, <https://github.com/thepaffy/>
+ *
  * This file is part of Netatmo-API-CPP.
  *
  * Netatmo-API-CPP is free software: you can redistribute it and/or modify
@@ -29,19 +31,26 @@ namespace netatmoapi {
  */
 class ResponseException: public std::exception {
 public:
-    ResponseException(const std::string &what) {
-        mWhat = what;
+    ResponseException(const std::string &what, const std::string &error) :
+        mWhat(what), mError(error) {
+
     }
-    ResponseException(const char *what) {
-        mWhat = what;
+    ResponseException(const char *what, const std::string &error) :
+        mWhat(what), mError(error) {
+
     }
 
     const char *what() const noexcept override {
         return mWhat.c_str();
     }
 
+    const char *error() const noexcept {
+        return mError.c_str();
+    }
+
 private:
     std::string mWhat;
+    std::string mError;
 };
 
 }

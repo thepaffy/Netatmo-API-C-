@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017 Christian Paffhausen, <https://github.com/thepaffy/>
+ *
  * This file is part of Netatmo-API-CPP.
  *
  * Netatmo-API-CPP is free software: you can redistribute it and/or modify
@@ -29,19 +31,32 @@ namespace netatmoapi {
  */
 class LoginException: public std::exception {
 public:
-    LoginException(const std::string &what) :
-        mWhat(what) {
+    enum CredentialType {
+        username,
+        password,
+        clientId,
+        clientSecret,
+        refreshToken
+    };
+
+    LoginException(const std::string &what, CredentialType ct) :
+        mWhat(what), mCt(ct) {
     }
-    LoginException(const char *what) :
-        mWhat(what) {
+    LoginException(const char *what, CredentialType ct) :
+        mWhat(what), mCt(ct) {
     }
 
     const char *what() const noexcept override {
         return mWhat.c_str();
     }
 
+    CredentialType credentialType() const noexcept {
+        return mCt;
+    }
+
 private:
     std::string mWhat;
+    CredentialType mCt;
 };
 
 }

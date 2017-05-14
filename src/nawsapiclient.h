@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017 Christian Paffhausen, <https://github.com/thepaffy/>
+ *
  * This file is part of Netatmo-API-CPP.
  *
  * Netatmo-API-CPP is free software: you can redistribute it and/or modify
@@ -31,7 +33,19 @@ namespace netatmoapi {
 class NAWSApiClient: public NAApiClient {
 public:
     /**
-     * Constructor
+     * Default constructor.
+     */
+    NAWSApiClient();
+
+    /**
+     * Constructor with initialization of client id and client secret.
+     * @param clientId The app developers client id.
+     * @param clientSecret The app developers client secret.
+     */
+    explicit NAWSApiClient(const std::string &clientId, const std::string &clientSecret);
+
+    /**
+     * Constructor with initialization of all credential values.
      * @param username The users username.
      * @param password The users password.
      * @param clientId The app developers client id.
@@ -39,7 +53,13 @@ public:
      * @param accessToken The access token, e.g. restored from disk.
      * @param refreshToken The refresh token, e.g. restored from disk.
      */
-    NAWSApiClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret, const std::string &accessToken = std::string(), const std::string &refreshToken = std::string());
+    explicit NAWSApiClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret, const std::string &accessToken = std::string(), const std::string &refreshToken = std::string());
+
+    /**
+     * Copy constructor.
+     * @param other The element to copy.
+     */
+    NAWSApiClient(const NAWSApiClient &other);
 
     /**
      * Requests data from the users weather stations via the netatmo get stationsdata api.

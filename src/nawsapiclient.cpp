@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017 Christian Paffhausen, <https://github.com/thepaffy/>
+ *
  * This file is part of Netatmo-API-CPP.
  *
  * Netatmo-API-CPP is free software: you can redistribute it and/or modify
@@ -22,8 +24,23 @@ namespace netatmoapi {
 
 const string NAWSApiClient::sUrlGetStationsData = NAApiClient::sUrlBase + "/api/getstationsdata";
 
+NAWSApiClient::NAWSApiClient() :
+    NAApiClient() {
+
+}
+
+NAWSApiClient::NAWSApiClient(const string &clientId, const string &clientSecret) :
+    NAApiClient(clientId, clientSecret) {
+
+}
+
 NAWSApiClient::NAWSApiClient(const string &username, const string &password, const string &clientId, const string &clientSecret, const string &accessToken, const string &refreshToken) :
     NAApiClient(username, password, clientId, clientSecret, accessToken, refreshToken) {
+
+}
+
+NAWSApiClient::NAWSApiClient(const NAWSApiClient &other) :
+    NAApiClient(other) {
 
 }
 
@@ -64,7 +81,8 @@ unordered_map<string, Station> NAWSApiClient::requestStationsData(const string &
             json jsonDevices = jsonBody["devices"];
             for (const json &jsonDevice: jsonDevices) {
                 string id = jsonDevice["_id"];
-                Station newStation(id);
+                Station newStation;
+                newStation.setId(id);
                 newStation.setModules(parseModules(jsonDevice["modules"]));
                 stationsMap.emplace(id, newStation);
             }
