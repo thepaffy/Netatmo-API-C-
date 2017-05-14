@@ -117,7 +117,19 @@ public:
     };
 
     /**
-     * Constructor
+     * Default constructor
+     */
+    NAApiClient();
+
+    /**
+     * Constructor with initialization of client id and client secret.
+     * @param clientId The app developers client id.
+     * @param clientSecret The app developers client secret.
+     */
+    explicit NAApiClient(const std::string &clientId, const std::string &clientSecret);
+
+    /**
+     * Constructor with initialization of all credential values.
      * @param username The users username.
      * @param password The users password.
      * @param clientId The app developers client id.
@@ -125,7 +137,13 @@ public:
      * @param accessToken The access token, e.g. restored from disk.
      * @param refreshToken The refresh token, e.g. restored from disk.
      */
-    NAApiClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret, const std::string &accessToken = std::string(), const std::string &refreshToken = std::string());
+    explicit NAApiClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret, const std::string &accessToken = std::string(), const std::string &refreshToken = std::string());
+
+    /**
+     * Copy constructor.
+     * @param other The element to copy.
+     */
+    NAApiClient(const NAApiClient &other);
 
     /**
      * Destructor

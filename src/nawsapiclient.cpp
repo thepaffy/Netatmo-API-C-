@@ -24,8 +24,23 @@ namespace netatmoapi {
 
 const string NAWSApiClient::sUrlGetStationsData = NAApiClient::sUrlBase + "/api/getstationsdata";
 
+NAWSApiClient::NAWSApiClient() :
+    NAApiClient() {
+
+}
+
+NAWSApiClient::NAWSApiClient(const string &clientId, const string &clientSecret) :
+    NAApiClient(clientId, clientSecret) {
+
+}
+
 NAWSApiClient::NAWSApiClient(const string &username, const string &password, const string &clientId, const string &clientSecret, const string &accessToken, const string &refreshToken) :
     NAApiClient(username, password, clientId, clientSecret, accessToken, refreshToken) {
+
+}
+
+NAWSApiClient::NAWSApiClient(const NAWSApiClient &other) :
+    NAApiClient(other) {
 
 }
 

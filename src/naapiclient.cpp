@@ -55,6 +55,18 @@ const string NAApiClient::sUrlBase = "https://api.netatmo.net";
 const string NAApiClient::sUrlRequestToken = NAApiClient::sUrlBase + "/oauth2/token";
 const string NAApiClient::sUrlGetMeasure = NAApiClient::sUrlBase + "/api/getmeasure";
 
+NAApiClient::NAApiClient() :
+    m(new NAApiClientPrivate) {
+    m->mExpiresIn = 0;
+}
+
+NAApiClient::NAApiClient(const string &clientId, const string &clientSecret) :
+    m(new NAApiClientPrivate) {
+    m->mClientId = clientId;
+    m->mClientSecret = clientSecret;
+    m->mExpiresIn = 0;
+}
+
 NAApiClient::NAApiClient(const string &username, const string &password, const string &clientId, const string &clientSecret, const string &accessToken, const string &refreshToken) :
     m(new NAApiClientPrivate) {
     m->mUsername = username;
@@ -64,6 +76,17 @@ NAApiClient::NAApiClient(const string &username, const string &password, const s
     m->mAccessToken = accessToken;
     m->mRefreshToken = refreshToken;
     m->mExpiresIn = 0;
+}
+
+NAApiClient::NAApiClient(const NAApiClient &other) :
+    m(new NAApiClientPrivate) {
+    m->mUsername = other.m->mUsername;
+    m->mPassword = other.m->mPassword;
+    m->mClientId = other.m->mClientId;
+    m->mClientSecret = other.m->mClientSecret;
+    m->mAccessToken = other.m->mAccessToken;
+    m->mRefreshToken = other.m->mRefreshToken;
+    m->mExpiresIn = other.m->mExpiresIn;
 }
 
 NAApiClient::~NAApiClient() = default;
