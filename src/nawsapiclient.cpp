@@ -81,7 +81,8 @@ unordered_map<string, Station> NAWSApiClient::requestStationsData(const string &
             json jsonDevices = jsonBody["devices"];
             for (const json &jsonDevice: jsonDevices) {
                 string id = jsonDevice["_id"];
-                Station newStation(id);
+                Station newStation;
+                newStation.setId(id);
                 newStation.setModules(parseModules(jsonDevice["modules"]));
                 stationsMap.emplace(id, newStation);
             }

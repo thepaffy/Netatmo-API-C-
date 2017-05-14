@@ -35,6 +35,11 @@ namespace netatmoapi {
 class Station {
 public:
     /**
+     * Default constructor.
+     */
+    Station();
+
+    /**
      * Constructor.
      * @param id The station id (MAC-Address).
      */

@@ -22,6 +22,10 @@ using namespace std;
 
 namespace netatmoapi {
 
+Station::Station() {
+
+}
+
 Station::Station(const string &id) {
     mId = id;
 }
