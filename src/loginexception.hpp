@@ -31,19 +31,32 @@ namespace netatmoapi {
  */
 class LoginException: public std::exception {
 public:
-    LoginException(const std::string &what) :
-        mWhat(what) {
+    enum CredentialType {
+        username,
+        password,
+        clientId,
+        clientSecret,
+        refreshToken
+    };
+
+    LoginException(const std::string &what, CredentialType ct) :
+        mWhat(what), mCt(ct) {
     }
-    LoginException(const char *what) :
-        mWhat(what) {
+    LoginException(const char *what, CredentialType ct) :
+        mWhat(what), mCt(ct) {
     }
 
     const char *what() const noexcept override {
         return mWhat.c_str();
     }
 
+    CredentialType credentialType() const noexcept {
+        return mCt;
+    }
+
 private:
     std::string mWhat;
+    CredentialType mCt;
 };
 
 }

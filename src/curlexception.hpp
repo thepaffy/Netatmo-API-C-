@@ -31,19 +31,26 @@ namespace netatmoapi {
  */
 class CurlException: public std::exception {
 public:
-    CurlException(const std::string &what) {
-        mWhat = what;
+    CurlException(const std::string &what, int code) :
+        mWhat(what), mCode(code) {
+
     }
-    CurlException(const char *what) {
-        mWhat = what;
+    CurlException(const char *what, int code) :
+        mWhat(what), mCode(code) {
+
     }
 
     const char *what() const noexcept override {
         return mWhat.c_str();
     }
 
+    int code() const noexcept {
+        return mCode;
+    }
+
 private:
     std::string mWhat;
+    int mCode;
 };
 
 }
