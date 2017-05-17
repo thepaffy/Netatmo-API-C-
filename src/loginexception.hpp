@@ -31,25 +31,52 @@ namespace netatmoapi {
  */
 class LoginException: public std::exception {
 public:
+    /**
+     * @brief Enum for missing credentials.
+     */
     enum CredentialType {
+        //! Miss username.
         username,
+        //! Miss password.
         password,
+        //! Miss client id.
         clientId,
+        //! Miss client secret.
         clientSecret,
+        //! Miss refresh token (Not logged in).
         refreshToken
     };
 
+    /**
+     * Constructor
+     * @param what What meassage.
+     * @param ct The missing credential type.
+     */
     LoginException(const std::string &what, CredentialType ct) :
         mWhat(what), mCt(ct) {
     }
+
+    /**
+     * Constructor
+     * @param what What meassage.
+     * @param ct The missing credential type.
+     */
     LoginException(const char *what, CredentialType ct) :
         mWhat(what), mCt(ct) {
     }
 
+    /**
+     * Returns the what message.
+     * @return The what message.
+     */
     const char *what() const noexcept override {
         return mWhat.c_str();
     }
 
+    /**
+     * Retruns the missing credential type.
+     * @return The credential type.
+     */
     CredentialType credentialType() const noexcept {
         return mCt;
     }
