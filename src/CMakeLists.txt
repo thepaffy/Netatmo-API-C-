@@ -4,8 +4,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-add_definitions(-std=c++14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
 find_package(nlohmann_json)
 
 file(GLOB netatmoapi_SRCS
@@ -27,7 +25,9 @@ file(GLOB netatmoapi_HDRS
     responseexception.hpp
 )
 
-add_library(${PROJECT_NAME} SHARED ${netatmoapi_SRCS})
+add_custom_target(ideWorkaround ${netatmoapi_HDRS})
+
+add_library(${PROJECT_NAME} SHARED ${netatmoapi_SRCS} ${netatmoapi_HDRS})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE curl)
 
