@@ -48,7 +48,7 @@ public:
     string mClientSecret;
     string mAccessToken;
     string mRefreshToken;
-    uint64_t mExpiresIn;
+    int64_t mExpiresIn;
 };
 
 const string NAApiClient::sUrlBase = "https://api.netatmo.net";
@@ -139,7 +139,7 @@ void NAApiClient::setRefreshToken(const string &refreshToken) {
     m->mRefreshToken = refreshToken;
 }
 
-uint64_t NAApiClient::expiresIn() const {
+int64_t NAApiClient::expiresIn() const {
     return m->mExpiresIn;
 }
 
@@ -172,8 +172,10 @@ void NAApiClient::login() {
     try {
         response = post(NAApiClient::sUrlRequestToken, params);
     } catch (const exception &ex) {
+#if !defined(NDEBUG)
         cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
         cerr << "Error: " << ex.what() << "\n";
+#endif
         throw;
     }
 
@@ -210,8 +212,10 @@ void NAApiClient::updateSession() {
     try {
         response = post(NAApiClient::sUrlRequestToken, params);
     } catch (const exception &ex) {
+#if !defined(NDEBUG)
         cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
         cerr << "Error: " << ex.what() << "\n";
+#endif
         throw;
     }
 
@@ -232,8 +236,10 @@ unordered_map<uint64_t, Measures> NAApiClient::requestMeasures(const string &dev
             updateSession();
         }
     } catch (const LoginException &ex) {
+#if !defined(NDEBUG)
         cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
         cerr << "Error: " << ex.what() << "\n";
+#endif
         throw;
     }
 
@@ -252,8 +258,10 @@ unordered_map<uint64_t, Measures> NAApiClient::requestMeasures(const string &dev
     try {
         response = get(NAApiClient::sUrlGetMeasure, params);
     } catch (const exception &ex) {
+#if !defined(NDEBUG)
         cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
         cerr << "Error: " << ex.what() << "\n";
+#endif
         throw;
     }
 
@@ -347,10 +355,20 @@ json NAApiClient::get(const string &url, const std::map<string, string> &params)
     }
     curl_global_cleanup();
 
+#if !defined(NDEBUG)
+    cout << rawResponse.str() << "\n";
+#endif
+
     json jsonResponse = json::parse(rawResponse.str());
 
     if (jsonResponse.find("error") != jsonResponse.end()) {
-        throw ResponseException("Netatmo response error", jsonResponse["error"]);
+        json jsonError = jsonResponse["error"];
+        if (jsonError.is_string()) {
+            throw ResponseException("OAuth error.", jsonError);
+        }
+        if (jsonError.is_object()) {
+            throw ResponseException("API error.", jsonError["message"]);
+        }
     }
 
     return jsonResponse;
@@ -378,10 +396,20 @@ json NAApiClient::post(const string &url, const std::map<string, string> &params
     }
     curl_global_cleanup();
 
+#if !defined(NDEBUG)
+    cout << rawResponse.str() << "\n";
+#endif
+
     json jsonResponse = json::parse(rawResponse.str());
 
     if (jsonResponse.find("error") != jsonResponse.end()) {
-        throw ResponseException("Netatmo response error", jsonResponse["error"]);
+        json jsonError = jsonResponse["error"];
+        if (jsonError.is_string()) {
+            throw ResponseException("OAuth error.", jsonError);
+        }
+        if (jsonError.is_object()) {
+            throw ResponseException("API error.", jsonError["message"]);
+        }
     }
 
     return jsonResponse;

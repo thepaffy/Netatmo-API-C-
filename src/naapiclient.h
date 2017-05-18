@@ -227,7 +227,7 @@ public:
      * Returns the stored expire time.
      * @return The expire time.
      */
-    std::uint64_t expiresIn() const;
+    std::int64_t expiresIn() const;
 
     /**
      * Sets the stored expire time.
