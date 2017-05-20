@@ -431,6 +431,8 @@ string NAApiClient::scaleToString(Scale scale) {
         return "1month";
     case max:
         return "max";
+    default:
+        return "";
     }
 }
 
@@ -477,6 +479,8 @@ string NAApiClient::typeToString(Type type) {
         return "sum_rain_1";
     case sumRain24:
         return "sum_rain_24";
+    default:
+        return "";
     }
 }
 
