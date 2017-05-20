@@ -20,17 +20,62 @@
 #include <unordered_map>
 #include <string>
 #include <iostream>
+#include <cstdlib>
+#include <vector>
+#include <sstream>
+#include <iterator>
 #include "nawsapiclient.h"
 
 using namespace netatmoapi;
 using namespace std;
 
-int main() {
+vector<string> split(const string &s, char delimiter) {
+    vector<string> elems;
+    auto elemsBackInserter = back_inserter(elems);
+    stringstream ss;
+    ss.str(s);
+    string item;
+    while (getline(ss, item, delimiter)) {
+        *(elemsBackInserter++) = item;
+    }
+    return elems;
+}
+
+void printUsage(const char *programmPath, const char *error) {
+    cout << error << "\n";
+    cout << "Usage:\n";
+    cout << "    " << programmPath << " username=<username> password=<password> clientId=<client id> clientSecret=<client secret>\n";
+    exit(-1);
+}
+
+int main(int argc, char **argv) {
+    if (argc < 5 || argc > 5) {
+        printUsage(argv[0], "Wrong number of arguments provided.");
+    }
+    string username;
+    string password;
+    string clientId;
+    string clientSecret;
+    for (int i = 1; i < 5; ++i) {
+        vector<string> parts = split(argv[i], '=');
+        if (parts[0] == "username") {
+            username = parts[1];
+        } else if (parts[0] == "password") {
+            password = parts[1];
+        } else if (parts[0] == "clientId") {
+            clientId = parts[1];
+        } else if (parts[0] == "clientSecret") {
+            clientSecret = parts[1];
+        }
+    }
+    if (username.empty() || password.empty() || clientId.empty() || clientSecret.empty()) {
+        printUsage(argv[0], "Wrong arguments provided.");
+    }
     NAWSApiClient *naWSApiClient = new NAWSApiClient();
-    naWSApiClient->setUsername("username");
-    naWSApiClient->setPassword("password");
-    naWSApiClient->setClientId("clientId");
-    naWSApiClient->setClientSecret("clientSecret");
+    naWSApiClient->setUsername(username);
+    naWSApiClient->setPassword(password);
+    naWSApiClient->setClientId(clientId);
+    naWSApiClient->setClientSecret(clientSecret);
 
     try {
         naWSApiClient->login();
