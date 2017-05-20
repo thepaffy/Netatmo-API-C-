@@ -8,6 +8,18 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 add_subdirectory(src)
 add_subdirectory(examples)
 
+# add a target to make a static code analyze
+option(STATIC_ANALYZE "Static code analyze with clang")
+if(STATIC_ANALYZE)
+
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/scan)
+    add_custom_target(analyze
+        COMMAND "scan-build make -j4 -o ${CMAKE_CURRENT_BINARY_DIR}/scan"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Analyze code"
+        VERBATIM)
+endif()
+
 # add a target to generate API documentation with Doxygen
 find_package(Doxygen)
 option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen)" ${DOXYGEN_FOUND})
