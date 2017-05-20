@@ -31,19 +31,38 @@ namespace netatmoapi {
  */
 class ResponseException: public std::exception {
 public:
+    /**
+     * Constructor
+     * @param what The what message.
+     * @param error The error code, returned via the api.
+     */
     ResponseException(const std::string &what, const std::string &error) :
         mWhat(what), mError(error) {
 
     }
+
+    /**
+     * Constructor
+     * @param what The what message.
+     * @param error The error code, returned via the api.
+     */
     ResponseException(const char *what, const std::string &error) :
         mWhat(what), mError(error) {
 
     }
 
+    /**
+     * Returns the what message.
+     * @return The what message.
+     */
     const char *what() const noexcept override {
         return mWhat.c_str();
     }
 
+    /**
+     * Returns the error code.
+     * @return The error code.
+     */
     const char *error() const noexcept {
         return mError.c_str();
     }

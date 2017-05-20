@@ -31,19 +31,38 @@ namespace netatmoapi {
  */
 class CurlException: public std::exception {
 public:
+    /**
+     * Constructor
+     * @param what The waht message.
+     * @param code The error code returned from curl.
+     */
     CurlException(const std::string &what, int code) :
         mWhat(what), mCode(code) {
 
     }
+
+    /**
+     * Constructor
+     * @param what The waht message.
+     * @param code The error code returned from curl.
+     */
     CurlException(const char *what, int code) :
         mWhat(what), mCode(code) {
 
     }
 
+    /**
+     * Returns the what message.
+     * @return The what message.
+     */
     const char *what() const noexcept override {
         return mWhat.c_str();
     }
 
+    /**
+     * Returns the error code from curl.
+     * @return The error code.
+     */
     int code() const noexcept {
         return mCode;
     }
