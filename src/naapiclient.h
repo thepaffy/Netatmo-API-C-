@@ -39,7 +39,7 @@ using json = nlohmann::json;
  */
 namespace netatmoapi {
 
-class NAApiClientPrivate;
+struct NAApiClientPrivate;
 
 /**
  * @brief This class handels the common part of the netatmo api.
@@ -141,15 +141,21 @@ public:
 
     /**
      * Copy constructor.
-     * @param other The element to copy.
+     * @param o The element to copy.
      */
-    NAApiClient(const NAApiClient &other);
+    NAApiClient(const NAApiClient &o);
+
+    /**
+     * Move constructor.
+     * @param o The element to move.
+     */
+    NAApiClient(NAApiClient &&o) noexcept;
 
     /**
      * Destructor
      * Is default.
      */
-    virtual ~NAApiClient();
+    virtual ~NAApiClient() noexcept;
 
     /**
      * Returns the users username.
@@ -266,6 +272,20 @@ public:
      */
     std::unordered_map<std::uint64_t, Measures> requestMeasures(const std::string &deviceId, const std::string &moduleId, Scale scale, const std::list<Type> &types, std::uint64_t dateBegin = 0, std::uint64_t dateEnd = 0);
 
+    /**
+     * Copy assignment operator
+     * @param o Elemement to copy
+     * @return This element as reference
+     */
+    NAApiClient &operator =(const NAApiClient &o);
+
+    /**
+     * Move assignment operator
+     * @param o Elemement to move
+     * @return This element as reference
+     */
+    NAApiClient &operator =(NAApiClient &&o) noexcept;
+
 protected:
     /**
      * Perfoms a http get request via libcurl.
@@ -332,7 +352,7 @@ protected:
 private:
     static std::string buildQuery(const std::map<std::string, std::string> &params, char separator);
     static std::string urlEncode(const std::string &toEncode);
-    std::unique_ptr<NAApiClientPrivate> const m;
+    std::unique_ptr<NAApiClientPrivate> m;
 };
 
 }

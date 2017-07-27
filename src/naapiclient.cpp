@@ -41,8 +41,37 @@ size_t writeCallback(char *buffer, size_t size, size_t nmemb, void *userp) {
     return 0;
 }
 
-class NAApiClientPrivate {
-public:
+struct NAApiClientPrivate {
+    explicit NAApiClientPrivate(int64_t expiresIn) :
+        mExpiresIn(expiresIn) {
+    }
+
+    explicit NAApiClientPrivate(const string &clientId, const string &clientSecret, int64_t expiresIn) :
+        mClientId(clientId),
+        mClientSecret(clientSecret),
+        mExpiresIn(expiresIn) {
+    }
+
+    explicit NAApiClientPrivate(const string &username, const string &password, const string &clientId, const string &clientSecret, const string &accessToken, const string &refreshToken, int64_t expiresIn) :
+        mUsername(username),
+        mPassword(password),
+        mClientId(clientId),
+        mClientSecret(clientSecret),
+        mAccessToken(accessToken),
+        mRefreshToken(refreshToken),
+        mExpiresIn(expiresIn) {
+    }
+
+    NAApiClientPrivate(const NAApiClientPrivate &o) :
+        mUsername(o.mUsername),
+        mPassword(o.mPassword),
+        mClientId(o.mClientId),
+        mClientSecret(o.mClientSecret),
+        mAccessToken(o.mAccessToken),
+        mRefreshToken(o.mRefreshToken),
+        mExpiresIn(o.mExpiresIn) {
+    }
+
     string mUsername;
     string mPassword;
     string mClientId;
@@ -57,40 +86,26 @@ const string NAApiClient::sUrlRequestToken = NAApiClient::sUrlBase + "/oauth2/to
 const string NAApiClient::sUrlGetMeasure = NAApiClient::sUrlBase + "/api/getmeasure";
 
 NAApiClient::NAApiClient() :
-    m(new NAApiClientPrivate) {
-    m->mExpiresIn = 0;
+    m(new NAApiClientPrivate(0)) {
 }
 
 NAApiClient::NAApiClient(const string &clientId, const string &clientSecret) :
-    m(new NAApiClientPrivate) {
-    m->mClientId = clientId;
-    m->mClientSecret = clientSecret;
-    m->mExpiresIn = 0;
+    m(new NAApiClientPrivate(clientId, clientSecret, 0)) {
 }
 
 NAApiClient::NAApiClient(const string &username, const string &password, const string &clientId, const string &clientSecret, const string &accessToken, const string &refreshToken) :
-    m(new NAApiClientPrivate) {
-    m->mUsername = username;
-    m->mPassword = password;
-    m->mClientId = clientId;
-    m->mClientSecret = clientSecret;
-    m->mAccessToken = accessToken;
-    m->mRefreshToken = refreshToken;
-    m->mExpiresIn = 0;
+    m(new NAApiClientPrivate(username, password, clientId, clientSecret, accessToken, refreshToken, 0)) {
 }
 
-NAApiClient::NAApiClient(const NAApiClient &other) :
-    m(new NAApiClientPrivate) {
-    m->mUsername = other.m->mUsername;
-    m->mPassword = other.m->mPassword;
-    m->mClientId = other.m->mClientId;
-    m->mClientSecret = other.m->mClientSecret;
-    m->mAccessToken = other.m->mAccessToken;
-    m->mRefreshToken = other.m->mRefreshToken;
-    m->mExpiresIn = other.m->mExpiresIn;
+NAApiClient::NAApiClient(const NAApiClient &o) :
+    m(new NAApiClientPrivate(*o.m)) {
 }
 
-NAApiClient::~NAApiClient() = default;
+NAApiClient::NAApiClient(NAApiClient &&o) noexcept :
+    m(move(o.m)){
+}
+
+NAApiClient::~NAApiClient() noexcept = default;
 
 string NAApiClient::username() const {
     return m->mUsername;
@@ -336,6 +351,16 @@ unordered_map<uint64_t, Measures> NAApiClient::requestMeasures(const string &dev
     }
 
     return measuresMap;
+}
+
+NAApiClient &NAApiClient::operator =(const NAApiClient &o) {
+    m.reset(new NAApiClientPrivate(*o.m));
+    return *this;
+}
+
+NAApiClient &NAApiClient::operator =(NAApiClient &&o) noexcept {
+    m = move(o.m);
+    return *this;
 }
 
 json NAApiClient::get(const string &url, const std::map<string, string> &params) {
