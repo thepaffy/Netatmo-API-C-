@@ -84,7 +84,7 @@ unordered_map<string, Station> NAWSApiClient::requestStationsData(const string &
                 Station newStation;
                 newStation.setId(id);
                 newStation.setModules(parseModules(jsonDevice["modules"]));
-                stationsMap.emplace(id, newStation);
+                stationsMap.emplace(id, move(newStation));
             }
         }
     }

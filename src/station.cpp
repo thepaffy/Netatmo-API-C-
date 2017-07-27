@@ -22,10 +22,6 @@ using namespace std;
 
 namespace netatmoapi {
 
-Station::Station() {
-
-}
-
 Station::Station(const string &id) {
     mId = id;
 }
@@ -34,12 +30,12 @@ void Station::setId(const string &id) {
     mId = id;
 }
 
-void Station::setModules(const unordered_map<string, Module> &modules) {
-    mModules = modules;
+void Station::setModules(std::unordered_map<string, Module> &&modules) {
+    mModules = move(modules);
 }
 
-void Station::addModule(const string &moduleId, const Module &module) {
-    mModules.emplace(moduleId, module);
+void Station::addModule(const string &moduleId, Module &&module) {
+    mModules.emplace(moduleId, forward<Module>(module));
 }
 
 }

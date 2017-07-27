@@ -37,7 +37,7 @@ public:
     /**
      * Default constructor.
      */
-    Station();
+    Station() = default;
 
     /**
      * Constructor.
@@ -67,14 +67,14 @@ public:
      * Sets the modules of the station.
      * @param modules A std::unorderd_map with the [id](@ref netatmoapi::Module::id) (MAC-Address) as key and the Module as value.
      */
-    void setModules(const std::unordered_map<std::string, Module> &modules);
+    void setModules(std::unordered_map<std::string, Module> &&modules);
 
     /**
      * Add a module to the station.
      * @param moduleId The [id](@ref netatmoapi::Module::id) (MAC-Address) of the module.
      * @param module The Module.
      */
-    void addModule(const std::string &moduleId, const Module &module);
+    void addModule(const std::string &moduleId, Module &&module);
 
     //! \todo Add function that return module by id. Add function to return the ids of all modules.
 
