@@ -16,26 +16,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Netatmo-API-CPP.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "station.h"
+#ifndef SCOPEEXIT_HPP
+#define SCOPEEXIT_HPP
 
-using namespace std;
+#include <utility>
 
 namespace netatmoapi {
 
-Station::Station(const string &id) {
-    mId = id;
+template <typename T>
+class ScopeExit {
+public:
+    ScopeExit(T &&t) :
+        mT(std::move(t))
+        {}
+    ~ScopeExit()
+    {
+        mT();
+    }
+private:
+    T mT;
+};
+
+template <typename T>
+ScopeExit<T> makeScopeExit(T &&t)
+{
+    return ScopeExit<T>(std::move(t));
 }
 
-void Station::setId(const string &id) {
-    mId = id;
 }
 
-void Station::setModules(std::unordered_map<string, Module> &&modules) {
-    mModules = move(modules);
-}
-
-void Station::addModule(const string &moduleId, Module &&module) {
-    mModules.emplace(moduleId, forward<Module>(module));
-}
-
-}
+#endif /* SCOPEEXIT_HPP */

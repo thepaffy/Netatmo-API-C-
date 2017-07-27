@@ -26,22 +26,14 @@ const string NAWSApiClient::sUrlGetStationsData = NAApiClient::sUrlBase + "/api/
 
 NAWSApiClient::NAWSApiClient() :
     NAApiClient() {
-
 }
 
 NAWSApiClient::NAWSApiClient(const string &clientId, const string &clientSecret) :
     NAApiClient(clientId, clientSecret) {
-
 }
 
 NAWSApiClient::NAWSApiClient(const string &username, const string &password, const string &clientId, const string &clientSecret, const string &accessToken, const string &refreshToken) :
     NAApiClient(username, password, clientId, clientSecret, accessToken, refreshToken) {
-
-}
-
-NAWSApiClient::NAWSApiClient(const NAWSApiClient &other) :
-    NAApiClient(other) {
-
 }
 
 unordered_map<string, Station> NAWSApiClient::requestStationsData(const string &deviceId, bool getFavorites) {
@@ -84,7 +76,7 @@ unordered_map<string, Station> NAWSApiClient::requestStationsData(const string &
                 Station newStation;
                 newStation.setId(id);
                 newStation.setModules(parseModules(jsonDevice["modules"]));
-                stationsMap.emplace(id, newStation);
+                stationsMap.emplace(id, move(newStation));
             }
         }
     }

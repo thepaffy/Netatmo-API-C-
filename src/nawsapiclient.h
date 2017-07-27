@@ -56,12 +56,6 @@ public:
     explicit NAWSApiClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret, const std::string &accessToken = std::string(), const std::string &refreshToken = std::string());
 
     /**
-     * Copy constructor.
-     * @param other The element to copy.
-     */
-    NAWSApiClient(const NAWSApiClient &other);
-
-    /**
      * Requests data from the users weather stations via the netatmo get stationsdata api.
      * @param deviceId Weather station mac address
      * @param getFavorites To retrieve user's favorite weather stations.

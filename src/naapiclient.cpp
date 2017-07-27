@@ -17,6 +17,7 @@
  * along with Netatmo-API-CPP.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "naapiclient.h"
+#include "scopeexit.hpp"
 
 #include <ctime>
 #include <sstream>
@@ -40,8 +41,37 @@ size_t writeCallback(char *buffer, size_t size, size_t nmemb, void *userp) {
     return 0;
 }
 
-class NAApiClientPrivate {
-public:
+struct NAApiClientPrivate {
+    explicit NAApiClientPrivate(int64_t expiresIn) :
+        mExpiresIn(expiresIn) {
+    }
+
+    explicit NAApiClientPrivate(const string &clientId, const string &clientSecret, int64_t expiresIn) :
+        mClientId(clientId),
+        mClientSecret(clientSecret),
+        mExpiresIn(expiresIn) {
+    }
+
+    explicit NAApiClientPrivate(const string &username, const string &password, const string &clientId, const string &clientSecret, const string &accessToken, const string &refreshToken, int64_t expiresIn) :
+        mUsername(username),
+        mPassword(password),
+        mClientId(clientId),
+        mClientSecret(clientSecret),
+        mAccessToken(accessToken),
+        mRefreshToken(refreshToken),
+        mExpiresIn(expiresIn) {
+    }
+
+    NAApiClientPrivate(const NAApiClientPrivate &o) :
+        mUsername(o.mUsername),
+        mPassword(o.mPassword),
+        mClientId(o.mClientId),
+        mClientSecret(o.mClientSecret),
+        mAccessToken(o.mAccessToken),
+        mRefreshToken(o.mRefreshToken),
+        mExpiresIn(o.mExpiresIn) {
+    }
+
     string mUsername;
     string mPassword;
     string mClientId;
@@ -56,40 +86,26 @@ const string NAApiClient::sUrlRequestToken = NAApiClient::sUrlBase + "/oauth2/to
 const string NAApiClient::sUrlGetMeasure = NAApiClient::sUrlBase + "/api/getmeasure";
 
 NAApiClient::NAApiClient() :
-    m(new NAApiClientPrivate) {
-    m->mExpiresIn = 0;
+    m(new NAApiClientPrivate(0)) {
 }
 
 NAApiClient::NAApiClient(const string &clientId, const string &clientSecret) :
-    m(new NAApiClientPrivate) {
-    m->mClientId = clientId;
-    m->mClientSecret = clientSecret;
-    m->mExpiresIn = 0;
+    m(new NAApiClientPrivate(clientId, clientSecret, 0)) {
 }
 
 NAApiClient::NAApiClient(const string &username, const string &password, const string &clientId, const string &clientSecret, const string &accessToken, const string &refreshToken) :
-    m(new NAApiClientPrivate) {
-    m->mUsername = username;
-    m->mPassword = password;
-    m->mClientId = clientId;
-    m->mClientSecret = clientSecret;
-    m->mAccessToken = accessToken;
-    m->mRefreshToken = refreshToken;
-    m->mExpiresIn = 0;
+    m(new NAApiClientPrivate(username, password, clientId, clientSecret, accessToken, refreshToken, 0)) {
 }
 
-NAApiClient::NAApiClient(const NAApiClient &other) :
-    m(new NAApiClientPrivate) {
-    m->mUsername = other.m->mUsername;
-    m->mPassword = other.m->mPassword;
-    m->mClientId = other.m->mClientId;
-    m->mClientSecret = other.m->mClientSecret;
-    m->mAccessToken = other.m->mAccessToken;
-    m->mRefreshToken = other.m->mRefreshToken;
-    m->mExpiresIn = other.m->mExpiresIn;
+NAApiClient::NAApiClient(const NAApiClient &o) :
+    m(new NAApiClientPrivate(*o.m)) {
 }
 
-NAApiClient::~NAApiClient() = default;
+NAApiClient::NAApiClient(NAApiClient &&o) noexcept :
+    m(move(o.m)){
+}
+
+NAApiClient::~NAApiClient() noexcept = default;
 
 string NAApiClient::username() const {
     return m->mUsername;
@@ -161,12 +177,13 @@ void NAApiClient::login() {
         throw LoginException("Client secret not set.", LoginException::clientSecret);
     }
 
-    map<string, string> params;
-    params.emplace("grant_type", "password");
-    params.emplace("client_id", clientId());
-    params.emplace("client_secret", clientSecret());
-    params.emplace("username", username());
-    params.emplace("password", password());
+    map<string, string> params = {
+        { "grant_type", "password" },
+        { "client_id", clientId() },
+        { "client_secret", clientSecret() },
+        { "username", username() },
+        { "password", password() }
+    };
 
     json response;
     try {
@@ -201,11 +218,12 @@ void NAApiClient::updateSession() {
         throw LoginException("Client secret not set.", LoginException::clientSecret);
     }
 
-    map<string, string> params;
-    params.emplace("grant_type", "refresh_token");
-    params.emplace("refresh_token", refreshToken());
-    params.emplace("client_id", clientId());
-    params.emplace("client_secret", clientSecret());
+    map<string, string> params = {
+        { "grant_type", "refresh_token" },
+        { "refresh_token", refreshToken() },
+        { "client_id", clientId() },
+        { "client_secret", clientSecret() }
+    };
 
     json response;
 
@@ -243,15 +261,16 @@ unordered_map<uint64_t, Measures> NAApiClient::requestMeasures(const string &dev
         throw;
     }
 
-    map<string, string> params;
-    params.emplace("access_token", accessToken());
-    params.emplace("device_id", deviceId);
-    params.emplace("module_id", moduleId);
-    params.emplace("scale", scaleToString(scale));
-    params.emplace("type", typesToString(types));
-    params.emplace("date_begin", dateBegin == 0 ? "null" : to_string(dateBegin));
-    params.emplace("date_end", dateEnd == 0 ? "null" : to_string(dateEnd));
-    params.emplace("optimize", "false");
+    map<string, string> params = {
+        { "access_token", accessToken() },
+        { "device_id", deviceId },
+        { "module_id", moduleId },
+        { "scale", scaleToString(scale) },
+        { "type", typesToString(types) },
+        { "date_begin", dateBegin == 0 ? "null" : to_string(dateBegin) },
+        { "date_end", dateEnd == 0 ? "null" : to_string(dateEnd) },
+        { "optimize", "false" }
+    };
 
     json response;
 
@@ -334,6 +353,16 @@ unordered_map<uint64_t, Measures> NAApiClient::requestMeasures(const string &dev
     return measuresMap;
 }
 
+NAApiClient &NAApiClient::operator =(const NAApiClient &o) {
+    m.reset(new NAApiClientPrivate(*o.m));
+    return *this;
+}
+
+NAApiClient &NAApiClient::operator =(NAApiClient &&o) noexcept {
+    m = move(o.m);
+    return *this;
+}
+
 json NAApiClient::get(const string &url, const std::map<string, string> &params) {
     CURL *curl;
     CURLcode res;
@@ -343,6 +372,7 @@ json NAApiClient::get(const string &url, const std::map<string, string> &params)
 
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
+    auto cleanup = makeScopeExit([=]() mutable { if (curl) {curl_easy_cleanup(curl);} curl_global_cleanup(); });
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, getUrl.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);
@@ -351,9 +381,7 @@ json NAApiClient::get(const string &url, const std::map<string, string> &params)
         if (res != CURLE_OK) {
             throw CurlException("Curl error", (int) res);
         }
-        curl_easy_cleanup(curl);
     }
-    curl_global_cleanup();
 
 #if !defined(NDEBUG)
     cout << rawResponse.str() << "\n";
@@ -383,6 +411,7 @@ json NAApiClient::post(const string &url, const std::map<string, string> &params
 
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
+    auto cleanup = makeScopeExit([=]() mutable { if (curl) {curl_easy_cleanup(curl);} curl_global_cleanup(); });
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);
@@ -392,9 +421,7 @@ json NAApiClient::post(const string &url, const std::map<string, string> &params
         if (res != CURLE_OK) {
             throw CurlException("Curl error", (int) res);
         }
-        curl_easy_cleanup(curl);
     }
-    curl_global_cleanup();
 
 #if !defined(NDEBUG)
     cout << rawResponse.str() << "\n";
