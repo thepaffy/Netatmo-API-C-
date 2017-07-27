@@ -23,9 +23,8 @@ file(GLOB netatmoapi_HDRS
     loginexception.hpp
     curlexception.hpp
     responseexception.hpp
+    scopeexit.hpp
 )
-
-add_custom_target(ideWorkaround ${netatmoapi_HDRS})
 
 add_library(${PROJECT_NAME} SHARED ${netatmoapi_SRCS} ${netatmoapi_HDRS})
 

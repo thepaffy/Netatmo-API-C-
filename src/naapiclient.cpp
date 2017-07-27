@@ -17,6 +17,7 @@
  * along with Netatmo-API-CPP.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "naapiclient.h"
+#include "scopeexit.hpp"
 
 #include <ctime>
 #include <sstream>
@@ -161,12 +162,13 @@ void NAApiClient::login() {
         throw LoginException("Client secret not set.", LoginException::clientSecret);
     }
 
-    map<string, string> params;
-    params.emplace("grant_type", "password");
-    params.emplace("client_id", clientId());
-    params.emplace("client_secret", clientSecret());
-    params.emplace("username", username());
-    params.emplace("password", password());
+    map<string, string> params = {
+        { "grant_type", "password" },
+        { "client_id", clientId() },
+        { "client_secret", clientSecret() },
+        { "username", username() },
+        { "password", password() }
+    };
 
     json response;
     try {
@@ -201,11 +203,12 @@ void NAApiClient::updateSession() {
         throw LoginException("Client secret not set.", LoginException::clientSecret);
     }
 
-    map<string, string> params;
-    params.emplace("grant_type", "refresh_token");
-    params.emplace("refresh_token", refreshToken());
-    params.emplace("client_id", clientId());
-    params.emplace("client_secret", clientSecret());
+    map<string, string> params = {
+        { "grant_type", "refresh_token" },
+        { "refresh_token", refreshToken() },
+        { "client_id", clientId() },
+        { "client_secret", clientSecret() }
+    };
 
     json response;
 
@@ -243,15 +246,16 @@ unordered_map<uint64_t, Measures> NAApiClient::requestMeasures(const string &dev
         throw;
     }
 
-    map<string, string> params;
-    params.emplace("access_token", accessToken());
-    params.emplace("device_id", deviceId);
-    params.emplace("module_id", moduleId);
-    params.emplace("scale", scaleToString(scale));
-    params.emplace("type", typesToString(types));
-    params.emplace("date_begin", dateBegin == 0 ? "null" : to_string(dateBegin));
-    params.emplace("date_end", dateEnd == 0 ? "null" : to_string(dateEnd));
-    params.emplace("optimize", "false");
+    map<string, string> params = {
+        { "access_token", accessToken() },
+        { "device_id", deviceId },
+        { "module_id", moduleId },
+        { "scale", scaleToString(scale) },
+        { "type", typesToString(types) },
+        { "date_begin", dateBegin == 0 ? "null" : to_string(dateBegin) },
+        { "date_end", dateEnd == 0 ? "null" : to_string(dateEnd) },
+        { "optimize", "false" }
+    };
 
     json response;
 
@@ -343,6 +347,7 @@ json NAApiClient::get(const string &url, const std::map<string, string> &params)
 
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
+    auto cleanup = makeScopeExit([=]() mutable { if (curl) {curl_easy_cleanup(curl);} curl_global_cleanup(); });
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, getUrl.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);
@@ -351,9 +356,7 @@ json NAApiClient::get(const string &url, const std::map<string, string> &params)
         if (res != CURLE_OK) {
             throw CurlException("Curl error", (int) res);
         }
-        curl_easy_cleanup(curl);
     }
-    curl_global_cleanup();
 
 #if !defined(NDEBUG)
     cout << rawResponse.str() << "\n";
@@ -383,6 +386,7 @@ json NAApiClient::post(const string &url, const std::map<string, string> &params
 
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
+    auto cleanup = makeScopeExit([=]() mutable { if (curl) {curl_easy_cleanup(curl);} curl_global_cleanup(); });
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);
@@ -392,9 +396,7 @@ json NAApiClient::post(const string &url, const std::map<string, string> &params
         if (res != CURLE_OK) {
             throw CurlException("Curl error", (int) res);
         }
-        curl_easy_cleanup(curl);
     }
-    curl_global_cleanup();
 
 #if !defined(NDEBUG)
     cout << rawResponse.str() << "\n";
