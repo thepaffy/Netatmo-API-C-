@@ -36,6 +36,14 @@ NAWSApiClient::NAWSApiClient(const string &username, const string &password, con
     NAApiClient(username, password, clientId, clientSecret, accessToken, refreshToken) {
 }
 
+NAWSApiClient::NAWSApiClient(const NAWSApiClient &o) :
+    NAApiClient(o) {
+}
+
+NAWSApiClient::NAWSApiClient(NAWSApiClient &&o) noexcept :
+    NAApiClient(move(o)) {
+}
+
 unordered_map<string, Station> NAWSApiClient::requestStationsData(const string &deviceId, bool getFavorites) {
     try {
         if (time(nullptr) >= expiresIn()) {
@@ -106,6 +114,16 @@ unordered_map<uint64_t, Measures> NAWSApiClient::requestRainMeasures(const strin
 unordered_map<uint64_t, Measures> NAWSApiClient::requestWindMeasures(const string &deviceId, const string &windGaugeId, Scale scale, uint64_t dateBegin, uint64_t dateEnd) {
     list<Type> types { windStrength, windAngle, gustStrength, gustAngle };
     return requestMeasures(deviceId, windGaugeId, scale, types, dateBegin, dateEnd);
+}
+
+NAWSApiClient &NAWSApiClient::operator =(const NAWSApiClient &o) {
+    NAApiClient::operator =(o);
+    return *this;
+}
+
+NAWSApiClient &NAWSApiClient::operator =(NAWSApiClient &&o) noexcept {
+    NAApiClient::operator =(move(o));
+    return *this;
 }
 
 unordered_map<string, Module> NAWSApiClient::parseModules(const json &jsonModules) {
