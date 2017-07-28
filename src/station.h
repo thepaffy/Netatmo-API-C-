@@ -128,7 +128,7 @@ public:
     Station &operator =(Station &&o) noexcept;
 
 private:
-    std::unique_ptr<StationPrivate> m;
+    std::unique_ptr<StationPrivate> d;
 };
 
 }

@@ -19,12 +19,15 @@
 #ifndef MODULE_H
 #define MODULE_H
 
+#include "measures.h"
+
+#include <memory>
 #include <string>
 #include <cstdint>
 
-#include "measures.h"
-
 namespace netatmoapi {
+
+struct ModulePrivate;
 
 /**
  * @brief This class represents a netatmo module.
@@ -51,10 +54,28 @@ public:
     explicit Module(const std::string &name, const std::string &id, const std::string &type, std::uint8_t batteryPercent, std::uint8_t rfStatus);
 
     /**
+     * Copy constructor.
+     * @param o The element to copy.
+     */
+    Module(const Module &o);
+
+    /**
+     * Move constructor.
+     * @param o The element to move.
+     */
+    Module(Module &&o) noexcept;
+
+    /**
+     * Destructor.
+     * Is default.
+     */
+    virtual ~Module() noexcept;
+
+    /**
      * Returns the name of the module.
      * @return The name.
      */
-    std::string name() const { return mName; }
+    std::string name() const;
 
     /**
      * Sets the name of the module.
@@ -66,7 +87,7 @@ public:
      * Returns the id of the module.
      * @return The id.
      */
-    std::string id() const { return mId; }
+    std::string id() const;
 
     /**
      * Sets the id of the module.
@@ -81,7 +102,7 @@ public:
      *
      * @return The type.
      */
-    std::string type() const { return mType; }
+    std::string type() const;
 
     /**
      * Sets the type the module.
@@ -96,7 +117,7 @@ public:
      * Returns the battery state of the module.
      * @return The barrery state.
      */
-    std::uint8_t batteryPercent() const { return mBatteryPercent; }
+    std::uint8_t batteryPercent() const;
 
     /**
      * Sets the battery state of the module.
@@ -111,7 +132,7 @@ public:
      *
      * @return The wifi state.
      */
-    std::uint8_t rfStatus() const { return mRfStatus; }
+    std::uint8_t rfStatus() const;
 
     /**
      * Sets the wifi state of the module
@@ -126,13 +147,17 @@ public:
      * Returns the measures of the module.
      * @return The measures.
      */
-    Measures measures() const { return mMeasures; }
+    Measures measures() const;
 
     /**
      * Sets the measures of the module.
      * @param measures
      */
-    void setMeasures(const Measures &measures);
+    void setMeasures(Measures &&measures);
+
+    Module &operator =(const Module &o);
+
+    Module &operator =(Module &&o) noexcept;
 
     /**
      * Base module.
@@ -170,12 +195,7 @@ public:
     static const std::string sTypeIndoor;
 
 private:
-    std::string mName;
-    std::string mId;
-    std::string mType;
-    std::uint8_t mBatteryPercent;
-    std::uint8_t mRfStatus;
-    Measures mMeasures;
+    std::unique_ptr<ModulePrivate> d;
 };
 
 }
