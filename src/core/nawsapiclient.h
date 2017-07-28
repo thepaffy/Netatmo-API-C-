@@ -20,7 +20,7 @@
 #define NAWSAPICLIENT_H
 
 #include "naapiclient.h"
-#include "station.h"
+#include "model/station.h"
 
 namespace netatmoapi {
 
