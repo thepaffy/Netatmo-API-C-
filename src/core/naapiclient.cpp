@@ -346,7 +346,7 @@ unordered_map<uint64_t, Measures> NAApiClient::requestMeasures(const string &dev
                     break;
                 }
             }
-            measuresMap.emplace(key, measures);
+            measuresMap.emplace(key, move(measures));
         }
     }
 
