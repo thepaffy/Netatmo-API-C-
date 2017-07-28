@@ -140,7 +140,7 @@ unordered_map<string, Module> NAWSApiClient::parseModules(const json &jsonModule
             newMeasures.setGustStrength(jsonDBData["GustStrenth"]);
             newMeasures.setGustAngle(jsonDBData["GustAngle"]);
         }
-        newModule.setMeasures(newMeasures);
+        newModule.setMeasures(move(newMeasures));
         modulesMap.emplace(id, newModule);
     }
     return modulesMap;
