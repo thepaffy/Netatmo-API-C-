@@ -38,66 +38,66 @@ struct StationPrivate {
 };
 
 Station::Station() :
-    m(new StationPrivate) {
+    d(new StationPrivate) {
 
 }
 
 Station::Station(const string &id) :
-    m(new StationPrivate(id)) {
+    d(new StationPrivate(id)) {
 }
 
 Station::Station(const Station &o) :
-    m(new StationPrivate(*o.m)) {
+    d(new StationPrivate(*o.d)) {
 }
 
 Station::Station(Station &&o) noexcept :
-    m(move(o.m)) {
+    d(move(o.d)) {
 }
 
 Station::~Station() noexcept = default;
 
 string Station::id() const {
-    return m->mId;
+    return d->mId;
 }
 
 void Station::setId(const string &id) {
-    m->mId = id;
+    d->mId = id;
 }
 
-std::unordered_map<string, Module> Station::modules() const {
-    return m->mModules;
+unordered_map<string, Module> Station::modules() const {
+    return d->mModules;
 }
 
 void Station::setModules(unordered_map<string, Module> &&modules) {
-    m->mModules = move(modules);
+    d->mModules = move(modules);
 }
 
 void Station::addModule(const string &moduleId, Module &&module) {
-    m->mModules.emplace(moduleId, move(module));
+    d->mModules.emplace(moduleId, move(module));
 }
 
 Module Station::module(const string &moduleId) const {
-    auto search = m->mModules.find(moduleId);
-    assert(search != m->mModules.end());
-    if (search == m->mModules.end()) {
+    auto search = d->mModules.find(moduleId);
+    assert(search != d->mModules.end());
+    if (search == d->mModules.end()) {
         throw out_of_range("No module with id: " + moduleId);
     }
     return search->second;
 }
 
 vector<string> Station::moduleIds() const {
-    vector<string> ids(m->mModules.size());
-    transform(m->mModules.begin(), m->mModules.end(), ids.begin(), [](auto pair){ return pair.first; });
+    vector<string> ids(d->mModules.size());
+    transform(d->mModules.begin(), d->mModules.end(), ids.begin(), [](auto pair){ return pair.first; });
     return ids;
 }
 
 Station &Station::operator =(const Station &o) {
-    m.reset(new StationPrivate(*o.m));
+    d.reset(new StationPrivate(*o.d));
     return *this;
 }
 
 Station &Station::operator =(Station &&o) noexcept {
-    m = move(o.m);
+    d = move(o.d);
     return *this;
 }
 
