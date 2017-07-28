@@ -93,6 +93,7 @@ unordered_map<uint64_t, Measures> NAWSApiClient::requestRainMeasures(const strin
     case oneHour:
     case threeHours:
         types.emplace_back(sumRain1);
+        break;
     case oneDay:
     case oneWeek:
     case oneMonth:
