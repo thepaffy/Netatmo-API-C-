@@ -352,7 +352,7 @@ protected:
 private:
     static std::string buildQuery(const std::map<std::string, std::string> &params, char separator);
     static std::string urlEncode(const std::string &toEncode);
-    std::unique_ptr<NAApiClientPrivate> m;
+    std::unique_ptr<NAApiClientPrivate> d;
 };
 
 }
