@@ -18,24 +18,87 @@
  */
 #include "station.h"
 
+#include <cassert>
+#include <algorithm>
+
 using namespace std;
 
 namespace netatmoapi {
 
-Station::Station(const string &id) {
-    mId = id;
+struct StationPrivate {
+    StationPrivate() = default;
+    StationPrivate(const string &id) :
+        mId(id)
+    {}
+    StationPrivate(const StationPrivate &o) :
+        mId(o.mId)
+    {}
+    string mId;
+    unordered_map<string, Module> mModules;
+};
+
+Station::Station() :
+    m(new StationPrivate) {
+
+}
+
+Station::Station(const string &id) :
+    m(new StationPrivate(id)) {
+}
+
+Station::Station(const Station &o) :
+    m(new StationPrivate(*o.m)) {
+}
+
+Station::Station(Station &&o) noexcept :
+    m(move(o.m)) {
+}
+
+Station::~Station() noexcept = default;
+
+string Station::id() const {
+    return m->mId;
 }
 
 void Station::setId(const string &id) {
-    mId = id;
+    m->mId = id;
 }
 
-void Station::setModules(std::unordered_map<string, Module> &&modules) {
-    mModules = move(modules);
+std::unordered_map<string, Module> Station::modules() const {
+    return m->mModules;
+}
+
+void Station::setModules(unordered_map<string, Module> &&modules) {
+    m->mModules = move(modules);
 }
 
 void Station::addModule(const string &moduleId, Module &&module) {
-    mModules.emplace(moduleId, forward<Module>(module));
+    m->mModules.emplace(moduleId, move(module));
+}
+
+Module Station::module(const string &moduleId) const {
+    auto search = m->mModules.find(moduleId);
+    assert(search != m->mModules.end());
+    if (search == m->mModules.end()) {
+        throw out_of_range("No module with id: " + moduleId);
+    }
+    return search->second;
+}
+
+vector<string> Station::moduleIds() const {
+    vector<string> ids(m->mModules.size());
+    transform(m->mModules.begin(), m->mModules.end(), ids.begin(), [](auto pair){ return pair.first; });
+    return ids;
+}
+
+Station &Station::operator =(const Station &o) {
+    m.reset(new StationPrivate(*o.m));
+    return *this;
+}
+
+Station &Station::operator =(Station &&o) noexcept {
+    m = move(o.m);
+    return *this;
 }
 
 }

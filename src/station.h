@@ -19,12 +19,17 @@
 #ifndef STATION_H
 #define STATION_H
 
-#include <unordered_map>
-#include <string>
-
 #include "module.h"
 
+#include <unordered_map>
+#include <string>
+#include <memory>
+#include <stdexcept>
+#include <vector>
+
 namespace netatmoapi {
+
+struct StationPrivate;
 
 /**
  * @brief This class represents a netatmo weather station.
@@ -37,7 +42,7 @@ public:
     /**
      * Default constructor.
      */
-    Station() = default;
+    Station();
 
     /**
      * Constructor.
@@ -46,10 +51,28 @@ public:
     explicit Station(const std::string &id);
 
     /**
+     * Copy constructor.
+     * @param o The element to copy.
+     */
+    Station(const Station &o);
+
+    /**
+     * Move constructor.
+     * @param o The element to move.
+     */
+    Station(Station &&o) noexcept;
+
+    /**
+     * Destructor.
+     * Is default.
+     */
+    virtual ~Station() noexcept;
+
+    /**
      * Returns the id of the station.
      * @return The id.
      */
-    std::string id() const { return mId; }
+    std::string id() const;
 
     /**
      *Sets the id of the station.
@@ -61,7 +84,7 @@ public:
      * Returns the modules of the station.
      * @return A std::unorderd_map with the [id](@ref netatmoapi::Module::id) (MAC-Address) as key and the Module as value.
      */
-    std::unordered_map<std::string, Module> modules() const { return mModules; }
+    std::unordered_map<std::string, Module> modules() const;
 
     /**
      * Sets the modules of the station.
@@ -76,11 +99,36 @@ public:
      */
     void addModule(const std::string &moduleId, Module &&module);
 
-    //! \todo Add function that return module by id. Add function to return the ids of all modules.
+    /**
+     * Retruns the module with the specified module id.
+     * @param id The module id.
+     * @return The module with the module id.
+     * @throw std::out_of_range If station has no module with module id.
+     */
+    Module module(const std::string &moduleId) const;
+
+    /**
+     * Returns all id's of all modules of the station.
+     * @return All id's.
+     */
+    std::vector<std::string> moduleIds() const;
+
+    /**
+     * Copy assign operator.
+     * @param o The Element to copy.
+     * @return This element as reference.
+     */
+    Station &operator =(const Station &o);
+
+    /**
+     * Move assign operator.
+     * @param o The Element to move.
+     * @return This element as reference.
+     */
+    Station &operator =(Station &&o) noexcept;
 
 private:
-    std::string mId;
-    std::unordered_map<std::string, Module> mModules;
+    std::unique_ptr<StationPrivate> m;
 };
 
 }
