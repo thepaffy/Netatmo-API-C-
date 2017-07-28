@@ -17,6 +17,8 @@
  * along with Netatmo-API-CPP-example.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "core/nawsapiclient.h"
+
 #include <unordered_map>
 #include <string>
 #include <iostream>
@@ -24,7 +26,6 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
-#include "nawsapiclient.h"
 
 using namespace netatmoapi;
 using namespace std;

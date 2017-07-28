@@ -19,6 +19,11 @@
 #ifndef NAAPICLIENT_H
 #define NAAPICLIENT_H
 
+#include "model/measures.h"
+#include "exceptions/loginexception.hpp"
+#include "exceptions/curlexception.hpp"
+#include "exceptions/responseexception.hpp"
+
 #include <memory>
 #include <string>
 #include <map>
@@ -26,11 +31,6 @@
 #include <unordered_map>
 #include <cstdint>
 #include <nlohmann/json.hpp>
-
-#include "measures.h"
-#include "loginexception.hpp"
-#include "curlexception.hpp"
-#include "responseexception.hpp"
 
 using json = nlohmann::json;
 
