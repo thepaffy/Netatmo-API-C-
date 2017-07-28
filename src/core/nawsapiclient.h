@@ -56,6 +56,24 @@ public:
     explicit NAWSApiClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret, const std::string &accessToken = std::string(), const std::string &refreshToken = std::string());
 
     /**
+     * Copy constructor.
+     * @param o The Element to copy.
+     */
+    NAWSApiClient(const NAWSApiClient &o);
+
+    /**
+     * Move constructor
+     * @param o The element to move.
+     */
+    NAWSApiClient(NAWSApiClient &&o) noexcept;
+
+    /**
+     * Destructor
+     * Is default.
+     */
+    ~NAWSApiClient() noexcept override = default;
+
+    /**
      * Requests data from the users weather stations via the netatmo get stationsdata api.
      * @param deviceId Weather station mac address
      * @param getFavorites To retrieve user's favorite weather stations.
@@ -93,6 +111,20 @@ public:
      * @throw ResponseException Rethrown from updateSession() and post().
      */
     std::unordered_map<std::uint64_t, Measures> requestWindMeasures(const std::string &deviceId, const std::string &windGaugeId, Scale scale, std::uint64_t dateBegin = 0, std::uint64_t dateEnd = 0);
+
+    /**
+     * Copy assignment operator.
+     * @param o The element to copy.
+     * @return This element as reference.
+     */
+    NAWSApiClient &operator =(const NAWSApiClient &o);
+
+    /**
+     * Move assignment operator.
+     * @param o The element to move.
+     * @return This element as reference.
+     */
+    NAWSApiClient &operator =(NAWSApiClient &&o) noexcept;
 
 private:
     std::unordered_map<std::string, Module> parseModules(const json &jsonModules);
