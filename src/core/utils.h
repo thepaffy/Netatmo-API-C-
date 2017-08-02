@@ -29,6 +29,10 @@
 using json = nlohmann::json;
 
 namespace netatmoapi {
+
+/**
+ * Namespace for netatmo utils.
+ */
 namespace utils {
 
 /**
@@ -40,9 +44,9 @@ namespace utils {
 std::string buildUrlQuery(const std::map<std::string, std::string> &params, char separator);
 
 /**
- * @brief urlEncode
- * @param toEncode
- * @return
+ * Encode the given string to a url.
+ * @param toEncode The string to encode.
+ * @return The encoded url.
  */
 std::string urlEncode(const std::string &toEncode);
 
@@ -50,7 +54,7 @@ std::string urlEncode(const std::string &toEncode);
  * Parses the result of NAWSApiClient::requestStationsData() into a list of Stations.
  * @param response The json response from NAWSApiClient::requestStationsData().
  * @return A parsed list of Stations.
-// */
+ */
 std::list<Station> parseDevices(const json &response);
 
 /**
