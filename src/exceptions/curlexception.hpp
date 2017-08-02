@@ -37,8 +37,8 @@ public:
      * @param code The error code returned from curl.
      */
     CurlException(const std::string &what, int code) :
-        mWhat(what), mCode(code) {
-
+        mWhat(what),
+        mCode(code) {
     }
 
     /**
@@ -47,8 +47,8 @@ public:
      * @param code The error code returned from curl.
      */
     CurlException(const char *what, int code) :
-        mWhat(what), mCode(code) {
-
+        mWhat(what),
+        mCode(code) {
     }
 
     /**

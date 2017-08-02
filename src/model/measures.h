@@ -27,19 +27,18 @@ namespace netatmoapi {
 /**
  * @brief Container for measures.
  */
-class Measures {
-public:
+struct Measures {
     /**
      * @brief Enum for pressure trend.
      */
-    enum PressureTrend {
-        //! No pressure trend data provided or state is unknown.
-        noData,
-        //! Pressure trend is up-wards.
+    enum Trend {
+        //! No trend data provided or state is unknown.
+        noData = -1,
+        //! Trend is up-wards.
         up,
-        //! Pressure trend is down-wards.
+        //! Trend is down-wards.
         down,
-        //! Pressure trend is stable.
+        //! Trend is stable.
         stable
     };
 
@@ -49,233 +48,117 @@ public:
     Measures();
 
     /**
-     * Returns the timestamp of the meausres.
-     * @return The timestamp of the measures.
+     * Converts the trend from string to Trend enum.
+     * @param trend The trend string.
+     * @return The trend enum value.
      */
-    std::uint64_t timeStamp() const { return mTimeStamp; }
+    static Trend convertTrendFromString(const std::string &trend);
 
     /**
-     * Sets the timestamp of the measures.
-     * @param timeStamp The timestamp.
+     * @brief Conevert the trend value to string.
+     * @param trend The trend enum value.
+     * @return The trend value as string.
      */
-    void setTimeStamp(std::uint64_t timeStamp);
+    static std::string convertTrendToString(Trend trend);
 
     /**
-     * Returns the timestamp of the min temperature.
-     * @return The timestamp of the min temperature.
+     * The measure timestamp.
      */
-    std::uint64_t timeStampMinTemp() const { return mTimeStampMinTemp; }
-
-    /**
-     * Sets the timestamp of the min temperature.
-     * @param timeStampMinTemp The timestamp.
-     */
-    void setTimeStampMinTemp(std::uint64_t timeStampMinTemp);
-
-    /**
-     * Returns the timestamp of the max temperature.
-     * @return The timestamp of the max temperature.
-     */
-    std::uint64_t timeStampMaxTemp() const { return mTimeStampMaxTemp; }
-
-    /**
-     * Sets the timestamp of the max temperature.
-     * @param timeStampMaxTemp The timestamp.
-     */
-    void setTimeStampMaxTemp(std::uint64_t timeStampMaxTemp);
-
-    /**
-     * Returns the temperature.
-     * @return The temperature.
-     */
-    double temperature() const { return mTemperature; }
-
-    /**
-     * Sets the temperature.
-     * @param temperature The temperature.
-     */
-    void setTemperature(double temperature);
-
-    /**
-     * Returns the Co2 value.
-     * @return The Co2 value.
-     */
-    double co2() const { return mCo2; }
-
-    /**
-     * Sets the Co2 value.
-     * @param co2 The Co2 value.
-     */
-    void setCo2(double co2);
-
-    /**
-     * Returns the humidity.
-     * @return The humidity.
-     */
-    double humidity() const { return mHumidity; }
-
-    /**
-     * Sets the humidity.
-     * @param humidity The humidity.
-     */
-    void setHumidity(double humidity);
-
-    /**
-     * Returns the pressure.
-     * @return The pressure.
-     */
-    double pressure() const { return mPressure; }
-
-    /**
-     * Sets the pressure.
-     * @param pressure The pressure.
-     */
-    void setPressure(double pressure);
-
-    /**
-     * Returns the rain value.
-     * @return The rain value.
-     */
-    double rain() const { return mRain; }
-
-    /**
-     * Sets the rain value.
-     * @param rain The rain value.
-     */
-    void setRain(double rain);
-
-    /**
-     * Returns the wind strength.
-     * @return The wind strength.
-     */
-    double windStrength() const { return mWindStrength; }
-
-    /**
-     * Sets the wind strength.
-     * @param windStrength The wind stength.
-     */
-    void setWindStrength(double windStrength);
-
-    /**
-     * Returns the wind angle.
-     * @return The wind angle.
-     */
-    double windAngle() const { return mWindAngle; }
-
-    /**
-     * Sets the wind angle.
-     * @param windAngle The wind angle.
-     */
-    void setWindAngle(double windAngle);
-
-    /**
-     * Returns the gust strength.
-     * @return The gust strength.
-     */
-    double gustStrength() const { return mGustStrength; }
-
-    /**
-     * Sets the gust strength.
-     * @param gustStrength The gust stength.
-     */
-    void setGustStrength(double gustStrength);
-
-    /**
-     * Returns the gust angle.
-     * @return The gust angle.
-     */
-    double gustAngle() const { return mGustAngle; }
-
-    /**
-     * Sets the gust angle.
-     * @param gustAngle The gust angle.
-     */
-    void setGustAngle(double gustAngle);
-
-    /**
-     * Returns the minimum temperature.
-     * @return The minimum temperature.
-     */
-    double minTemperature() const { return mMinTemperature; }
-
-    /**
-     * Sets the minimum temperature.
-     * @param minTemperature The minimum temperature.
-     */
-    void setMinTemperature(double minTemperature);
-
-    /**
-     * Returns the maximum temperature.
-     * @return The maximum temperature.
-     */
-    double maxTemperature() const { return mMaxTemperature; }
-
-    /**
-     * Sets the maximum temperature.
-     * @param maxTemperature The maximum temperature.
-     */
-    void setMaxTemperature(double maxTemperature);
-
-    /**
-     * Returns the pressure trend for the last 12 hours.
-     * @return The pressure trend.
-     */
-    PressureTrend pressureTrend12() const { return mPressureTrend12; }
-
-    /**
-     * Sets the pressure trend for the last 12 hours.
-     * @param pressureTrend12 The pressure trend.
-     */
-    void setPressureTrend12(PressureTrend pressureTrend12);
-
-    /**
-     * Returns the sum of the rain for the last hour.
-     * @return The sum of the rain.
-     */
-    double sumRain1() const { return mSumRain1; }
-
-    /**
-     * Sets the sum of the rain for the last hour.
-     * @param sumRain1 The sum of the rain.
-     */
-    void setSumRain1(double sumRain1);
-
-    /**
-     * Returns the sum of the rain for the last 24 hours.
-     * @return The sum of the rain.
-     */
-    double sumRain24() const { return mSumRain24; }
-
-    /**
-     * Sets the sum of the rain for the last 24 hours.
-     * @param sumRain24 The sum of the rain.
-     */
-    void setSumRain24(double sumRain24);
-
-    /**
-     * Converts the pressure trend from string to PressureTrend enum.
-     * @param pressureTrend The pressure trend string.
-     * @return The pressure trend enum value.
-     */
-    static PressureTrend convertPressureTrendFromString(const std::string &pressureTrend);
-
-private:
     std::uint64_t   mTimeStamp;
-    std::uint64_t   mTimeStampMinTemp;
-    std::uint64_t   mTimeStampMaxTemp;
+
+    /**
+     * The min temp date.
+     */
+    std::uint64_t   mDateMinTemp;
+
+    /**
+     * The max temp date.
+     */
+    std::uint64_t   mDateMaxTemp;
+
+    /**
+     * The temperature value.
+     */
     double          mTemperature;
+
+    /**
+     * The CO2 value.
+     */
     double          mCo2;
+
+    /**
+     * The humidity value.
+     */
     double          mHumidity;
+
+    /**
+     * The pressure value.
+     */
     double          mPressure;
+
+    /**
+     * The absolute pressure value.
+     */
+    double          mAbsolutePressure;
+
+    /**
+     * The noise value.
+     */
+    double          mNoise;
+
+    /**
+     * The rain value.
+     */
     double          mRain;
+
+    /**
+     * The wind strength value.
+     */
     double          mWindStrength;
+
+    /**
+     * The wind angle value.
+     */
     double          mWindAngle;
+
+    /**
+     * The gust strength value.
+     */
     double          mGustStrength;
+
+    /**
+     * The gust angle value.
+     */
     double          mGustAngle;
+
+    /**
+     * The minimum temperature value.
+     */
     double          mMinTemperature;
+
+    /**
+     * The maximum temperature value.
+     */
     double          mMaxTemperature;
-    PressureTrend   mPressureTrend12;
+
+    /**
+     * The temperature trend.
+     */
+    Trend           mTemperatureTrend;
+
+    /**
+     * The pressure trend.
+     */
+    Trend           mPressureTrend;
+
+    /**
+     * The rain sum for the last hour.
+     */
     double          mSumRain1;
+
+    /**
+     * he rain sum for the last 24 hours.
+     */
     double          mSumRain24;
 };
 

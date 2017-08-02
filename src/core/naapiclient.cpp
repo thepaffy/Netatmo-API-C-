@@ -17,12 +17,10 @@
  * along with Netatmo-API-CPP.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "naapiclient.h"
+#include "utils.h"
 #include "scopeexit.hpp"
 
 #include <ctime>
-#include <sstream>
-#include <cctype>
-#include <iomanip>
 #include <curl/curl.h>
 
 using namespace std;
@@ -83,7 +81,6 @@ struct NAApiClientPrivate {
 
 const string NAApiClient::sUrlBase = "https://api.netatmo.net";
 const string NAApiClient::sUrlRequestToken = NAApiClient::sUrlBase + "/oauth2/token";
-const string NAApiClient::sUrlGetMeasure = NAApiClient::sUrlBase + "/api/getmeasure";
 
 NAApiClient::NAApiClient() :
     d(new NAApiClientPrivate(0)) {
@@ -248,111 +245,6 @@ void NAApiClient::updateSession() {
     }
 }
 
-unordered_map<uint64_t, Measures> NAApiClient::requestMeasures(const string &deviceId, const string &moduleId, Scale scale, const list<Type> &types, uint64_t dateBegin, uint64_t dateEnd) {
-    try {
-        if (time(nullptr) >= expiresIn()) {
-            updateSession();
-        }
-    } catch (const LoginException &ex) {
-#if !defined(NDEBUG)
-        cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
-        cerr << "Error: " << ex.what() << "\n";
-#endif
-        throw;
-    }
-
-    map<string, string> params = {
-        { "access_token", accessToken() },
-        { "device_id", deviceId },
-        { "module_id", moduleId },
-        { "scale", scaleToString(scale) },
-        { "type", typesToString(types) },
-        { "date_begin", dateBegin == 0 ? "null" : to_string(dateBegin) },
-        { "date_end", dateEnd == 0 ? "null" : to_string(dateEnd) },
-        { "optimize", "false" }
-    };
-
-    json response;
-
-    try {
-        response = get(NAApiClient::sUrlGetMeasure, params);
-    } catch (const exception &ex) {
-#if !defined(NDEBUG)
-        cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
-        cerr << "Error: " << ex.what() << "\n";
-#endif
-        throw;
-    }
-
-    unordered_map<uint64_t, Measures> measuresMap;
-    if (response.find("body") != response.end()) {
-        json jsonBody = response["body"];
-        for (auto it = jsonBody.cbegin(); it != jsonBody.cend(); ++it) {    // Iterate over body object
-            istringstream iss(it.key());
-            uint64_t key;
-            iss >> key;
-            Measures measures;
-            measures.setTimeStamp(key);
-            json jsonValues = it.value(); // Values array
-            json::const_iterator itValues;
-            list<Type>::const_iterator itTypes;
-            for (itValues = jsonValues.cbegin(), itTypes = types.cbegin(); itValues != jsonValues.cend() || itTypes != types.cend(); ++itValues, ++itTypes) {   // Iterate over types and json array to get measures
-                switch (*itTypes) {
-                case temperature:
-                    measures.setTemperature(*itValues);
-                    break;
-                case co2:
-                    measures.setCo2(*itValues);
-                    break;
-                case humidity:
-                    measures.setHumidity(*itValues);
-                    break;
-                case pressure:
-                    measures.setPressure(*itValues);
-                    break;
-                case rain:
-                    measures.setRain(*itValues);
-                    break;
-                case windStrength:
-                    measures.setWindStrength(*itValues);
-                    break;
-                case windAngle:
-                    measures.setWindAngle(*itValues);
-                    break;
-                case gustStrength:
-                    measures.setGustStrength(*itValues);
-                    break;
-                case gustAngle:
-                    measures.setGustAngle(*itValues);
-                    break;
-                case minTemperature:
-                    measures.setMinTemperature(*itValues);
-                    ++itValues;
-                    measures.setTimeStampMinTemp(*itValues);
-                    break;
-                case maxTemperature:
-                    measures.setMaxTemperature(*itValues);
-                    ++itValues;
-                    measures.setTimeStampMaxTemp(*itValues);
-                    break;
-                case pressureTrend12:
-                    measures.setPressureTrend12(Measures::convertPressureTrendFromString(*itValues));
-                    break;
-                case sumRain1:
-                    measures.setSumRain1(*itValues);
-                    break;
-                case sumRain24:
-                    measures.setSumRain24(*itValues);
-                    break;
-                }
-            }
-            measuresMap.emplace(key, move(measures));
-        }
-    }
-
-    return measuresMap;
-}
-
 NAApiClient &NAApiClient::operator =(const NAApiClient &o) {
     d.reset(new NAApiClientPrivate(*o.d));
     return *this;
@@ -367,7 +259,7 @@ json NAApiClient::get(const string &url, const std::map<string, string> &params)
     CURL *curl;
     CURLcode res;
 
-    string getUrl = url + '?' + buildQuery(params, '&');
+    string getUrl = url + '?' + utils::buildUrlQuery(params, '&');
     ostringstream rawResponse;
 
     curl_global_init(CURL_GLOBAL_ALL);
@@ -406,7 +298,7 @@ json NAApiClient::post(const string &url, const std::map<string, string> &params
     CURL *curl;
     CURLcode res;
 
-    string postField = buildQuery(params, '&');
+    string postField = utils::buildUrlQuery(params, '&');
     ostringstream rawResponse;
 
     curl_global_init(CURL_GLOBAL_ALL);
@@ -440,107 +332,6 @@ json NAApiClient::post(const string &url, const std::map<string, string> &params
     }
 
     return jsonResponse;
-}
-
-string NAApiClient::scaleToString(Scale scale) {
-    switch (scale) {
-    case thirtyMinutes:
-        return "30min";
-    case oneHour:
-        return "1hour";
-    case threeHours:
-        return "3hours";
-    case oneDay:
-        return "1day";
-    case oneWeek:
-        return "1week";
-    case oneMonth:
-        return "1month";
-    case max:
-        return "max";
-    default:
-        return "";
-    }
-}
-
-string NAApiClient::typesToString(const list<Type> &types) {
-    string type;
-
-    for (auto it = types.cbegin(); it != types.cend(); ++it) {
-        type.append(typeToString(*it));
-        if (next(it) != types.cend()) {
-            type.append(",");
-        }
-    }
-
-    return type;
-}
-
-string NAApiClient::typeToString(Type type) {
-    switch (type) {
-    case temperature:
-        return "Temperature";
-    case co2:
-        return "CO2";
-    case humidity:
-        return "Humidity";
-    case pressure:
-        return "Pressure";
-    case rain:
-        return "Rain";
-    case windStrength:
-        return "WindStrength";
-    case windAngle:
-        return "WindAngle";
-    case gustStrength:
-        return "Guststrength";
-    case gustAngle:
-        return "GustAngle";
-    case minTemperature:
-        return "min_temp,date_min_temp";    // Yes, that's ugly.
-    case maxTemperature:
-        return "max_temp,date_max_temp";    // Yes, that's ugly.
-    case pressureTrend12:
-        return "pressure_trend";
-    case sumRain1:
-        return "sum_rain_1";
-    case sumRain24:
-        return "sum_rain_24";
-    default:
-        return "";
-    }
-}
-
-string NAApiClient::buildQuery(const map<string, string> &params, char separator) {
-    string query;
-    for (auto it = params.cbegin(); it != params.cend(); ++it) {
-        query.append(it->first);
-        query.push_back('=');
-        query.append(urlEncode(it->second));
-        if (next(it) != params.cend()) {
-            query.push_back(separator);
-        }
-    }
-    return query;
-}
-
-string NAApiClient::urlEncode(const string &toEncode) {
-    ostringstream escaped;
-    escaped.fill('0');
-    escaped << hex;
-
-    for (const string::value_type &c: toEncode) {
-        if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
-            escaped << c;
-            continue;
-        }
-
-        escaped << uppercase;
-        escaped << '%' << setw(2) << int((unsigned char) c);
-        escaped << nouppercase;
-    }
-
-    return escaped.str();
 }
 
 } /* end namespace */

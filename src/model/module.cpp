@@ -27,10 +27,10 @@ struct ModulePrivate {
         mBatteryPercent(batteryPercent),
         mRfStatus(rfStatus)
     {}
-    ModulePrivate(const string &name, const string &id, const string &type, uint8_t batteryPercent, uint8_t rfStatus) :
-        mName(name),
-        mId(id),
-        mType(type),
+    ModulePrivate(string &&name, string &&id, string &&type, uint8_t batteryPercent, uint8_t rfStatus) :
+        mName(forward<string>(name)),
+        mId(forward<string>(id)),
+        mType(forward<string>(type)),
         mBatteryPercent(batteryPercent),
         mRfStatus(rfStatus)
     {}
@@ -57,11 +57,12 @@ const string Module::sTypeRainGauge = "NAModule3";
 const string Module::sTypeIndoor = "NAModule4";
 
 Module::Module() :
-    d(new ModulePrivate(0, 0)){
+    d(new ModulePrivate(-1, -1)){
 }
 
-Module::Module(const string &name, const string &id, const string &type, uint8_t batteryPercent, uint8_t rfStatus) :
-    d(new ModulePrivate(name, id, type, batteryPercent, rfStatus)) {
+Module::Module(string &&name, string &&id, string &&type, uint8_t batteryPercent, uint8_t rfStatus) :
+    d(new ModulePrivate(forward<string>(name), forward<string>(id), forward<string>(type), batteryPercent, rfStatus)) {
+
 }
 
 Module::Module(const Module &o) :
@@ -78,24 +79,24 @@ string Module::name() const {
     return d->mName;
 }
 
-void Module::setName(const string &name) {
-    d->mName = name;
+void Module::setName(string &&name) {
+    d->mName = move(name);
 }
 
 string Module::id() const {
     return d->mId;
 }
 
-void Module::setId(const string &id) {
-    d->mId = id;
+void Module::setId(string &&id) {
+    d->mId = move(id);
 }
 
 string Module::type() const {
     return d->mType;
 }
 
-void Module::setType(const string &type) {
-    d->mType = type;
+void Module::setType(string &&type) {
+    d->mType = move(type);
 }
 
 uint8_t Module::batteryPercent() const {

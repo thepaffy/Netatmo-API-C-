@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Netatmo-API-CPP.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef RESPONSEEXCEPTION_HPP
-#define RESPONSEEXCEPTION_HPP
+#ifndef TYPENOTSUPPORTEDEXCEPTION_HPP
+#define TYPENOTSUPPORTEDEXCEPTION_HPP
 
 #include <exception>
 #include <string>
@@ -25,30 +25,28 @@
 namespace netatmoapi {
 
 /**
- * @brief This exception is thrown, if the response of the api contains a error value.
- *
- * The error code is part of the what message.
+ * @brief This exception is thrown, if the measure parsing fot the module type is not supported.
  */
-class ResponseException: public std::exception {
+class TypeNotSupportedException: public std::exception {
 public:
     /**
      * Constructor
      * @param what The what message.
-     * @param error The error code, returned via the api.
+     * @param type The not supported type.
      */
-    ResponseException(const std::string &what, const std::string &error) :
+    TypeNotSupportedException(const std::string &what, const std::string &type) :
         mWhat(what),
-        mError(error) {
+        mType(type) {
     }
 
     /**
      * Constructor
      * @param what The what message.
-     * @param error The error code, returned via the api.
+     * @param type The not supported type.
      */
-    ResponseException(const char *what, const std::string &error) :
+    TypeNotSupportedException(const char *what, const std::string &type) :
         mWhat(what),
-        mError(error) {
+        mType(type) {
     }
 
     /**
@@ -60,18 +58,18 @@ public:
     }
 
     /**
-     * Returns the error code.
-     * @return The error code.
+     * Returns the type.
+     * @return The type.
      */
-    const char *error() const noexcept {
-        return mError.c_str();
+    const char *type() const noexcept {
+        return mType.c_str();
     }
 
 private:
     std::string mWhat;
-    std::string mError;
+    std::string mType;
 };
 
 }
 
-#endif /* RESPONSEEXCEPTION_HPP */
+#endif /* TYPENOTSUPPORTEDEXCEPTION_HPP */

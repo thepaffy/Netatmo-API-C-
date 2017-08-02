@@ -18,14 +18,16 @@
  */
 
 #include "core/nawsapiclient.h"
+#include "core/utils.h"
 
-#include <unordered_map>
 #include <string>
 #include <iostream>
 #include <cstdlib>
 #include <vector>
 #include <sstream>
 #include <iterator>
+#include <list>
+#include <memory>
 
 using namespace netatmoapi;
 using namespace std;
@@ -72,48 +74,43 @@ int main(int argc, char **argv) {
     if (username.empty() || password.empty() || clientId.empty() || clientSecret.empty()) {
         printUsage(argv[0], "Wrong arguments provided.");
     }
-    NAWSApiClient *naWSApiClient = new NAWSApiClient();
-    naWSApiClient->setUsername(username);
-    naWSApiClient->setPassword(password);
-    naWSApiClient->setClientId(clientId);
-    naWSApiClient->setClientSecret(clientSecret);
+    unique_ptr<NAWSApiClient> naWSApiClient = make_unique<NAWSApiClient>(username, password, clientId, clientSecret);
 
     try {
         naWSApiClient->login();
-        unordered_map<string, Station> stations = naWSApiClient->requestStationsData("deviceId");
-        for (const pair<string, Station> &station: stations) {
+        json stationsData = naWSApiClient->requestStationsData();
+        list<Station> stations = utils::parseDevices(stationsData);
+        for (const Station &station: stations) {
             cout << "====================Station begin======================\n";
-            cout << "Station id: " << station.first << "\n";
-            unordered_map<string, Module> modules = station.second.modules();
-            for (const pair<string, Module> &module: modules) {
+            cout << "Station name: " << station.name() << "\n";
+            cout << "Station id: " << station.id() << "\n";
+            list<Module> modules = station.modules();
+            for (const Module &module: modules) {
                 cout << "================Module begin=======================\n";
-                cout << "Module name: " << module.second.name() << "\n";
-                cout << "Module id: " << module.second.id() << "\n";
-                cout << "Module battery status: " << module.second.batteryPercent() << "%\n";
-                cout << "Module wireless status: " << module.second.rfStatus() << "\n";
-                string type = module.second.type();
+                cout << "Module name: " << module.name() << "\n";
+                cout << "Module id: " << module.id() << "\n";
+                string type = module.type();
                 cout << "Module type: " << type << "\n";
-                Measures measures = module.second.measures();
+                cout << "Module battery status: " << (int) module.batteryPercent() << "%\n";
+                cout << "Module wireless status: " << (int) module.rfStatus() << "\n";
+                Measures measures = module.measures();
                 if (type == Module::sTypeBase || type == Module::sTypeIndoor) {
-                    cout << "Temperature: " << measures.temperature() << "°C\n";
-                    cout << "Co2: " << measures.co2() << "ppm\n";
-                    cout << "Humidity: " << measures.humidity() << "%\n";
+                    cout << "Temperature: " << measures.mTemperature << "°C\n";
+                    cout << "Temperature trend: " << Measures::convertTrendToString(measures.mTemperatureTrend) << "\n";
+                    cout << "Min. temperature: " << measures.mMinTemperature << "°C\n";
+                    cout << "Max. temperature: " << measures.mMaxTemperature << "°C\n";
+                    cout << "Co2: " << measures.mCo2 << "ppm\n";
+                    cout << "Pressure: " << measures.mPressure << "mbar\n";
+                    cout << "Pressure trend: " << Measures::convertTrendToString(measures.mPressureTrend) << "\n";
+                    cout << "Absolute pressure: " << measures.mAbsolutePressure << "mbar\n";
+                    cout << "Noise: " << measures.mNoise << "dB\n";
+                    cout << "Hunidity: " << measures.mHumidity << "%\n";
                 } else if (type == Module::sTypeOutdoor) {
-                    cout << "Temperature: " << measures.temperature() << "°C\n";
-                    cout << "Humidity: " << measures.humidity() << "%\n";
-                    cout << "Pressure: " << measures.pressure() << "mbar\n";
-                    cout << "Pressure trend last 12 hours: " << measures.pressureTrend12() << "\n";
-                    cout << "Min temperature: " << measures.minTemperature() << "°C\n";
-                    cout << "Max temperature: " << measures.maxTemperature() << "°C\n";
-                } else if (type == Module::sTypeRainGauge) {
-                    cout << "Rain: " << measures.rain() << "mm\n";
-                    cout << "Sum rain last hour: " << measures.sumRain1() << "mm\n";
-                    cout << "Sum rain last 24 hours: " << measures.sumRain24() << "mm\n";
-                } else if (type == Module::sTypeWindGauge) {
-                    cout << "Wind strength: " << measures.windStrength() << "km/h\n";
-                    cout << "Wind angle: " << measures.windAngle() << "°\n";
-                    cout << "Gust strength: " << measures.gustStrength() << "km/h\n";
-                    cout << "Gust angle: " << measures.gustAngle() << "°\n";
+                    cout << "Temperature: " << measures.mTemperature << "°C\n";
+                    cout << "Temperature trend: " << Measures::convertTrendToString(measures.mTemperatureTrend) << "\n";
+                    cout << "Min. temperature: " << measures.mMinTemperature << "°C\n";
+                    cout << "Max. temperature: " << measures.mMaxTemperature << "°C\n";
+                    cout << "Hunidity: " << measures.mHumidity << "%\n";
                 }
                 cout << "================Module end=========================\n";
             }
@@ -135,8 +132,6 @@ int main(int argc, char **argv) {
         cerr << "Catched somewhat exception.\n";
         cerr << "What: " << ex.what() << "\n";
     }
-
-    delete naWSApiClient;
 
     return 0;
 }

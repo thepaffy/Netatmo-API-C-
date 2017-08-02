@@ -9,6 +9,7 @@ find_package(nlohmann_json)
 file(GLOB netatmoapi_SRCS
     core/naapiclient.cpp
     core/nawsapiclient.cpp
+    core/utils.cpp
     model/station.cpp
     model/module.cpp
     model/measures.cpp
@@ -17,6 +18,7 @@ file(GLOB netatmoapi_SRCS
 file(GLOB netatmoapi_core_HDRS
     core/naapiclient.h
     core/nawsapiclient.h
+    core/utils.h
 )
 
 file(GLOB netatmoapi_core_private_HDRS
@@ -27,12 +29,14 @@ file(GLOB netatmoapi_model_HDRS
     model/station.h
     model/module.h
     model/measures.h
+    model/params.h
 )
 
 file(GLOB netatmoapi_exceptions_HDRS
     exceptions/loginexception.hpp
     exceptions/curlexception.hpp
     exceptions/responseexception.hpp
+    exceptions/typenotsupportedexception.hpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${netatmoapi_SRCS} ${netatmoapi_core_HDRS} ${netatmoapi_core_private_HDRS} ${netatmoapi_model_HDRS} ${netatmoapi_exceptions_HDRS})

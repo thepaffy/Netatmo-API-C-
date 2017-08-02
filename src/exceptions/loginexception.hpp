@@ -53,7 +53,8 @@ public:
      * @param ct The missing credential type.
      */
     LoginException(const std::string &what, CredentialType ct) :
-        mWhat(what), mCt(ct) {
+        mWhat(what),
+        mCt(ct) {
     }
 
     /**
@@ -62,7 +63,8 @@ public:
      * @param ct The missing credential type.
      */
     LoginException(const char *what, CredentialType ct) :
-        mWhat(what), mCt(ct) {
+        mWhat(what),
+        mCt(ct) {
     }
 
     /**
