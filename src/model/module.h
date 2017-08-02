@@ -51,7 +51,7 @@ public:
      * @param batteryPercent The battery status of the module.
      * @param rfStatus The wifi status of the module.
      */
-    explicit Module(const std::string &name, const std::string &id, const std::string &type, std::uint8_t batteryPercent, std::uint8_t rfStatus);
+    explicit Module(std::string &&name, std::string &&id, std::string &&type, std::uint8_t batteryPercent = -1, std::uint8_t rfStatus = -1);
 
     /**
      * Copy constructor.
@@ -81,7 +81,7 @@ public:
      * Sets the name of the module.
      * @param name The name.
      */
-    void setName(const std::string &name);
+    void setName(std::string &&name);
 
     /**
      * Returns the id of the module.
@@ -93,7 +93,7 @@ public:
      * Sets the id of the module.
      * @param id The id.
      */
-    void setId(const std::string &id);
+    void setId(std::string &&id);
 
     /**
      * Returns the type the module.
@@ -111,7 +111,7 @@ public:
      *
      * @param type The type.
      */
-    void setType(const std::string &type);
+    void setType(std::string &&type);
 
     /**
      * Returns the battery state of the module.
@@ -155,8 +155,18 @@ public:
      */
     void setMeasures(Measures &&measures);
 
+    /**
+     * Copy assignment operator.
+     * @param o The element to copy.
+     * @return This element as reference.
+     */
     Module &operator =(const Module &o);
 
+    /**
+     * Move assignment operator.
+     * @param o The element to move.
+     * @return This element as reference.
+     */
     Module &operator =(Module &&o) noexcept;
 
     /**
