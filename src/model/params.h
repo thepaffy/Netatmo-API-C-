@@ -22,29 +22,113 @@
 #include <string>
 
 namespace netatmoapi {
+
+/**
+ * Namespace for netatmo parameters.
+ */
 namespace params {
 
 // These are some of the types available.
 // See the full list here: http://dev.netatmo.com/doc/restapi/getmeasure
+
+/**
+ * Type temperature.
+ */
 const std::string cTypeTemperature = "Temperature";
+
+/**
+ * Type Co2.
+ */
 const std::string cTypeCo2 = "CO2";
+
+/**
+ * Type humidity.
+ */
 const std::string cTypeHumidity = "Humidity";
+
+/**
+ * Type pressure.
+ */
 const std::string cTypePressure = "Pressure";
+
+/**
+ * Type absolute pressure.
+ */
 const std::string cTypeAbsolutePressure = "AbsolutePressure";
+
+/**
+ * Type noise.
+ */
 const std::string cTypeNoise = "Noise";
+
+/**
+ * Type min temp.
+ */
 const std::string cTypeMinTemp = "min_temp";
+
+/**
+ * Type max temp.
+ */
 const std::string cTypeMaxTemp = "max_temp";
+
+/**
+ * Type rain.
+ */
 const std::string cTypeRain = "Rain";
+
+/**
+ * Type rain sum for the last 24h hours.
+ */
 const std::string cTypeRainSum24 = "sum_rain_24";
+
+/**
+ * Type rain sum for the last hour.
+ */
 const std::string cTypeRainSum1 = "sum_rain_1";
+
+/**
+ * Type wind angle.
+ */
 const std::string cTypeWindAngle = "WindAngle";
+
+/**
+ * Type wind strength.
+ */
 const std::string cTypeWindStrength = "WindStrength";
+
+/**
+ * Type gust angle.
+ */
 const std::string cTypeGustAngle = "GustAngle";
+
+/**
+ * Type gist strength.
+ */
 const std::string cTypeGustStrength = "GustStrength";
+
+/**
+ * Type temperature trend.
+ */
 const std::string cTypeTemperatureTrend = "temp_trend";
+
+/**
+ * Type pressure trend.
+ */
 const std::string cTypePressureTrend = "pressure_trend";
+
+/**
+ * Type timestamp.
+ */
 const std::string cTypeTimeUtc = "time_utc";
+
+/**
+ * Type date min temperature.
+ */
 const std::string cTypeDateMinTemp = "date_min_temp";
+
+/**
+ * Type date max temperature.
+ */
 const std::string cTypeDateMaxTemp = "date_max_temp";
 
 }
