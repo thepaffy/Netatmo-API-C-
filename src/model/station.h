@@ -21,11 +21,10 @@
 
 #include "module.h"
 
-#include <unordered_map>
+#include <list>
 #include <string>
 #include <memory>
 #include <stdexcept>
-#include <vector>
 
 namespace netatmoapi {
 
@@ -46,9 +45,10 @@ public:
 
     /**
      * Constructor.
+     * @param name The station name.
      * @param id The station id (MAC-Address).
      */
-    explicit Station(const std::string &id);
+    explicit Station(std::string &&name, std::string &&id);
 
     /**
      * Copy constructor.
@@ -69,6 +69,18 @@ public:
     virtual ~Station() noexcept;
 
     /**
+     * Returns the name of the station,
+     * @return The name.
+     */
+    std::string name() const;
+
+    /**
+     * Set the name of the station.
+     * @param name The name.
+     */
+    void setName(std::string &&name);
+
+    /**
      * Returns the id of the station.
      * @return The id.
      */
@@ -78,40 +90,25 @@ public:
      *Sets the id of the station.
      * @param id The id.
      */
-    void setId(const std::string &id);
+    void setId(std::string &&id);
 
     /**
      * Returns the modules of the station.
-     * @return A std::unorderd_map with the [id](@ref netatmoapi::Module::id) (MAC-Address) as key and the Module as value.
+     * @return A std::list with all [Modules](@ref netatmoapi::Module) of the station.
      */
-    std::unordered_map<std::string, Module> modules() const;
+    std::list<Module> modules() const;
 
     /**
      * Sets the modules of the station.
-     * @param modules A std::unorderd_map with the [id](@ref netatmoapi::Module::id) (MAC-Address) as key and the Module as value.
+     * @param modules A std::list with all [Modules](@ref netatmoapi::Module) for the Station.
      */
-    void setModules(std::unordered_map<std::string, Module> &&modules);
+    void setModules(std::list<Module> &&modules);
 
     /**
      * Add a module to the station.
-     * @param moduleId The [id](@ref netatmoapi::Module::id) (MAC-Address) of the module.
      * @param module The Module.
      */
-    void addModule(const std::string &moduleId, Module &&module);
-
-    /**
-     * Retruns the module with the specified module id.
-     * @param id The module id.
-     * @return The module with the module id.
-     * @throw std::out_of_range If station has no module with module id.
-     */
-    Module module(const std::string &moduleId) const;
-
-    /**
-     * Returns all id's of all modules of the station.
-     * @return All id's.
-     */
-    std::vector<std::string> moduleIds() const;
+    void addModule(Module &&module);
 
     /**
      * Copy assign operator.

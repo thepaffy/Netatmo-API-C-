@@ -18,23 +18,22 @@
  */
 #include "station.h"
 
-#include <cassert>
-#include <algorithm>
-
 using namespace std;
 
 namespace netatmoapi {
 
 struct StationPrivate {
     StationPrivate() = default;
-    StationPrivate(const string &id) :
-        mId(id)
+    StationPrivate(string &&name, string &&id) noexcept :
+        mName(forward<string>(name)),
+        mId(forward<string>(id))
     {}
     StationPrivate(const StationPrivate &o) :
         mId(o.mId)
     {}
+    string mName;
     string mId;
-    unordered_map<string, Module> mModules;
+    list<Module> mModules;
 };
 
 Station::Station() :
@@ -42,8 +41,8 @@ Station::Station() :
 
 }
 
-Station::Station(const string &id) :
-    d(new StationPrivate(id)) {
+Station::Station(string &&name, string &&id) :
+    d(new StationPrivate(forward<string>(name), forward<string>(id))) {
 }
 
 Station::Station(const Station &o) :
@@ -56,39 +55,32 @@ Station::Station(Station &&o) noexcept :
 
 Station::~Station() noexcept = default;
 
+string Station::name() const {
+    return d->mName;
+}
+
+void Station::setName(string &&name) {
+    d->mName = move(name);
+}
+
 string Station::id() const {
     return d->mId;
 }
 
-void Station::setId(const string &id) {
-    d->mId = id;
+void Station::setId(string &&id) {
+    d->mId = move(id);
 }
 
-unordered_map<string, Module> Station::modules() const {
+list<Module> Station::modules() const {
     return d->mModules;
 }
 
-void Station::setModules(unordered_map<string, Module> &&modules) {
+void Station::setModules(list<Module> &&modules) {
     d->mModules = move(modules);
 }
 
-void Station::addModule(const string &moduleId, Module &&module) {
-    d->mModules.emplace(moduleId, move(module));
-}
-
-Module Station::module(const string &moduleId) const {
-    auto search = d->mModules.find(moduleId);
-    assert(search != d->mModules.end());
-    if (search == d->mModules.end()) {
-        throw out_of_range("No module with id: " + moduleId);
-    }
-    return search->second;
-}
-
-vector<string> Station::moduleIds() const {
-    vector<string> ids(d->mModules.size());
-    transform(d->mModules.begin(), d->mModules.end(), ids.begin(), [](auto pair){ return pair.first; });
-    return ids;
+void Station::addModule(Module &&module) {
+    d->mModules.emplace_back(move(module));
 }
 
 Station &Station::operator =(const Station &o) {
