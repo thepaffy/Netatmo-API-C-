@@ -27,8 +27,6 @@
 #include <memory>
 #include <string>
 #include <map>
-#include <list>
-#include <unordered_map>
 #include <cstdint>
 #include <nlohmann/json.hpp>
 
@@ -60,62 +58,6 @@ struct NAApiClientPrivate;
  */
 class NAApiClient {
 public:
-    /**
-     * @brief Enum for timelapse between two measurements.
-     */
-    enum Scale {
-        //! Every value is returned.
-        max,
-        //! 1 value every 30 minutes.
-        thirtyMinutes,
-        //! 1 value every hour.
-        oneHour,
-        //! 1 value every three hours.
-        threeHours,
-        //! 1 value every day.
-        oneDay,
-        //! 1 value every week.
-        oneWeek,
-        //! 1 value every month.
-        oneMonth
-    };
-
-    /**
-     * @brief Enum for measure type.
-     *
-     * Depends on scale. See https://dev.netatmo.com/resources/technical/reference/common/getmeasure
-     */
-    enum Type {
-        //! Type temperature.
-        temperature,
-        //! Type Co2 value.
-        co2,
-        //! Type humidity.
-        humidity,
-        //! Type pressure.
-        pressure,
-        //! Type rain.
-        rain,
-        //! Type wind strength.
-        windStrength,
-        //! Type wind angle.
-        windAngle,
-        //! Type gust strength.
-        gustStrength,
-        //! Type gust angle.
-        gustAngle,
-        //! Type minimum temperature.
-        minTemperature,
-        //! Type maximum temperature.
-        maxTemperature,
-        //! Type pressure trend for the last 12 hours.
-        pressureTrend12,
-        //! Type rain sum for the last hour.
-        sumRain1,
-        //! Type rain sum for the las 24 hours.
-        sumRain24
-    };
-
     /**
      * Default constructor
      */
@@ -258,21 +200,6 @@ public:
     void updateSession();
 
     /**
-     * Request the measures for the specified device and module via the netatmo get measures api.
-     * @param deviceId The device id for the specific device.
-     * @param moduleId The module id for the specific module.
-     * @param scale The scale for the measures.
-     * @param types The measure types to request.
-     * @param dateBegin The beginning timetamp for the measures.
-     * @param dateEnd The ending timestamp for the measures.
-     * @return A std::unorderd_map with the measures time stamp as key and the Measures as value.
-     * @throw LoginException Rethrown from updateSession().
-     * @throw CurlException Rethrown from updateSession() and post().
-     * @throw ResponseException Rethrown from updateSession() and post().
-     */
-    std::unordered_map<std::uint64_t, Measures> requestMeasures(const std::string &deviceId, const std::string &moduleId, Scale scale, const std::list<Type> &types, std::uint64_t dateBegin = 0, std::uint64_t dateEnd = 0);
-
-    /**
      * Copy assignment operator
      * @param o Elemement to copy
      * @return This element as reference
@@ -308,27 +235,6 @@ protected:
     json post(const std::string &url, const std::map<std::string, std::string> &params);
 
     /**
-     * Retruns a string coresponding to the Scale value.
-     * @param scale The enum value.
-     * @return The coresponding string.
-     */
-    static std::string scaleToString(Scale scale);
-
-    /**
-     * Returns a comma separated string coresponding the the list of Types.
-     * @param types A std::list of Types.
-     * @return The comma separated string.
-     */
-    static std::string typesToString(const std::list<Type> &types);
-
-    /**
-     * Returns a string coresponding the the Type value.
-     * @param type The enum value.
-     * @return The coresponding string.
-     */
-    static std::string typeToString(Type type);
-
-    /**
      * The base netatmo api url.
      *
      * Value: "https://api.netatmo.net"
@@ -342,16 +248,7 @@ protected:
      */
     static const std::string sUrlRequestToken;
 
-    /**
-     * The get measure api url.
-     *
-     * Value: sUrlBase + "/api/getmeasure"
-     */
-    static const std::string sUrlGetMeasure;
-
 private:
-    static std::string buildQuery(const std::map<std::string, std::string> &params, char separator);
-    static std::string urlEncode(const std::string &toEncode);
     std::unique_ptr<NAApiClientPrivate> d;
 };
 
