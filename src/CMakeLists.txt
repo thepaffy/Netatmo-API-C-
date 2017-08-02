@@ -27,6 +27,7 @@ file(GLOB netatmoapi_model_HDRS
     model/station.h
     model/module.h
     model/measures.h
+    model/params.h
 )
 
 file(GLOB netatmoapi_exceptions_HDRS
