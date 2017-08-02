@@ -37,8 +37,8 @@ public:
      * @param error The error code, returned via the api.
      */
     ResponseException(const std::string &what, const std::string &error) :
-        mWhat(what), mError(error) {
-
+        mWhat(what),
+        mError(error) {
     }
 
     /**
@@ -47,8 +47,8 @@ public:
      * @param error The error code, returned via the api.
      */
     ResponseException(const char *what, const std::string &error) :
-        mWhat(what), mError(error) {
-
+        mWhat(what),
+        mError(error) {
     }
 
     /**
