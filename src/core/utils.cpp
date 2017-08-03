@@ -31,6 +31,9 @@ namespace netatmoapi {
 namespace utils {
 
 string buildUrlQuery(const map<string, string> &params, char separator) {
+    if (separator == '=' || separator == ' ') {
+        throw invalid_argument("Invalid separator character.");
+    }
     string query;
     for (auto it = params.cbegin(); it != params.cend(); ++it) {
         query.append(it->first);
