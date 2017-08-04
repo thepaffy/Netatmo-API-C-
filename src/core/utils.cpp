@@ -129,7 +129,7 @@ Measures parseMeasures(const json &dashbordData, const string &moduleType) {
         measures.mDateMaxTemp = dashbordData[params::cTypeDateMaxTemp];
         measures.mCo2 = dashbordData[params::cTypeCo2];
         measures.mPressure = dashbordData[params::cTypePressure];
-        measures.mPressureTrend = Measures::convertTrendFromString(dashbordData[params::cTypeTemperatureTrend]);
+        measures.mPressureTrend = Measures::convertTrendFromString(dashbordData[params::cTypePressureTrend]);
         measures.mAbsolutePressure = dashbordData[params::cTypeAbsolutePressure];
         measures.mNoise = dashbordData[params::cTypeNoise];
         measures.mHumidity = dashbordData[params::cTypeHumidity];
