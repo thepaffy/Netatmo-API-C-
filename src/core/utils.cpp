@@ -92,8 +92,8 @@ list<Station> parseDevices(const json &response) {
                     string name = jsonModule["module_name"];
                     string id = jsonModule["_id"];
                     string type = jsonModule["type"];
-                    uint8_t batteryPercent = jsonModule["battery_percent"];
-                    uint8_t rfStatus = jsonModule["rf_status"];
+                    int16_t batteryPercent = jsonModule["battery_percent"];
+                    int16_t rfStatus = jsonModule["rf_status"];
 
                     Measures measures;
                     try {

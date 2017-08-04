@@ -23,11 +23,11 @@ using namespace std;
 namespace netatmoapi {
 
 struct ModulePrivate {
-    ModulePrivate(uint8_t batteryPercent, uint8_t rfStatus) :
+    ModulePrivate(int16_t batteryPercent, int16_t rfStatus) :
         mBatteryPercent(batteryPercent),
         mRfStatus(rfStatus)
     {}
-    ModulePrivate(string &&name, string &&id, string &&type, uint8_t batteryPercent, uint8_t rfStatus) :
+    ModulePrivate(string &&name, string &&id, string &&type, int16_t batteryPercent, int16_t rfStatus) :
         mName(forward<string>(name)),
         mId(forward<string>(id)),
         mType(forward<string>(type)),
@@ -45,8 +45,8 @@ struct ModulePrivate {
     string mName;
     string mId;
     string mType;
-    uint8_t mBatteryPercent;
-    uint8_t mRfStatus;
+    int16_t mBatteryPercent;
+    int16_t mRfStatus;
     Measures mMeasures;
 };
 
@@ -60,7 +60,7 @@ Module::Module() :
     d(new ModulePrivate(-1, -1)){
 }
 
-Module::Module(string &&name, string &&id, string &&type, uint8_t batteryPercent, uint8_t rfStatus) :
+Module::Module(string &&name, string &&id, string &&type, int16_t batteryPercent, int16_t rfStatus) :
     d(new ModulePrivate(forward<string>(name), forward<string>(id), forward<string>(type), batteryPercent, rfStatus)) {
 
 }
@@ -99,19 +99,19 @@ void Module::setType(string &&type) {
     d->mType = move(type);
 }
 
-uint8_t Module::batteryPercent() const {
+int16_t Module::batteryPercent() const {
     return d->mBatteryPercent;
 }
 
-void Module::setBatteryPercent(uint8_t batteryPercent) {
+void Module::setBatteryPercent(int16_t batteryPercent) {
     d->mBatteryPercent = batteryPercent;
 }
 
-uint8_t Module::rfStatus() const {
+int16_t Module::rfStatus() const {
     return d->mRfStatus;
 }
 
-void Module::setRfStatus(uint8_t rfStatus) {
+void Module::setRfStatus(int16_t rfStatus) {
     d->mRfStatus = rfStatus;
 }
 
