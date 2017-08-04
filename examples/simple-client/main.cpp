@@ -91,8 +91,8 @@ int main(int argc, char **argv) {
                 cout << "Module id: " << module.id() << "\n";
                 string type = module.type();
                 cout << "Module type: " << type << "\n";
-                cout << "Module battery status: " << (int) module.batteryPercent() << "%\n";
-                cout << "Module wireless status: " << (int) module.rfStatus() << "\n";
+                cout << "Module battery status: " << module.batteryPercent() << "%\n";
+                cout << "Module wireless status: " << module.rfStatus() << "\n";
                 Measures measures = module.measures();
                 if (type == Module::sTypeBase || type == Module::sTypeIndoor) {
                     cout << "Temperature: " << measures.mTemperature << "°C\n";
