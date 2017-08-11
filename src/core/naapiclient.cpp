@@ -22,6 +22,7 @@
 
 #include <ctime>
 #include <curl/curl.h>
+#include <iostream>
 
 using namespace std;
 

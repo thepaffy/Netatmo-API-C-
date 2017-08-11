@@ -24,6 +24,7 @@
 #include <cctype>
 #include <iomanip>
 #include <cstdlib>
+#include <iostream>
 
 using namespace std;
 
