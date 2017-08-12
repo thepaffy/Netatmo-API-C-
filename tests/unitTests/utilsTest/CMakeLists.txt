@@ -15,3 +15,4 @@ target_link_libraries(${PROJECT_NAME}
     netatmoapi++
     gtest
 )
+add_test(utilsTest utilsTest)

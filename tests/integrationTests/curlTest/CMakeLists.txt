@@ -15,3 +15,4 @@ target_link_libraries(${PROJECT_NAME}
     gtest
     curl
 )
+add_test(curlTest curlTest)
