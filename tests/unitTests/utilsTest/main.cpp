@@ -18,8 +18,8 @@
  */
 
 #include "core/utils.h"
-#include "gtest/gtest.h"
 
+#include <gtest/gtest.h>
 #include <stdexcept>
 
 using namespace netatmoapi;

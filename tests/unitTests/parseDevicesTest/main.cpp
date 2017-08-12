@@ -18,7 +18,8 @@
  */
 
 #include "core/utils.h"
-#include "gtest/gtest.h"
+
+#include <gtest/gtest.h>
 
 using namespace netatmoapi;
 using namespace netatmoapi::utils;
@@ -26,7 +27,7 @@ using namespace netatmoapi::utils;
 using namespace std;
 
 
-TEST(ParseDevicesTest, parseDevice) {
+TEST(ParseDevicesTest, parseDevices) {
     json response = json::parse("{\"body\":{\"devices\":[{\"_id\":\"70:ee:50:29:48:4e\",\"cipher_id\":\"enc:16:y+aGVZeVut\\/5aKVfwFPW5FcNsBQ4ugLGB3FjOo05QrOe\\/2ag5gMshltnTt4jBM01\",\"last_status_store\":1501708387,\"modules\":[ ],\"place\":{\"altitude\":248,\"city\":\"Waldbreitbach\",\"country\":\"DE\",\"timezone\":\"Europe\\/Berlin\",\"location\":[7.4027088,50.555413]},\"station_name\":\"wetterstation\",\"type\":\"NAMain\",\"dashboard_data\":{\"AbsolutePressure\":988.6,\"time_utc\":1501708372,\"Noise\":38,\"Temperature\":23.1,\"temp_trend\":\"stable\",\"Humidity\":69,\"Pressure\":1018.1,\"pressure_trend\":\"down\",\"CO2\":426,\"date_max_temp\":1501673300,\"date_min_temp\":1501655170,\"min_temp\":22,\"max_temp\":24.5},\"data_type\":[\"Temperature\",\"CO2\",\"Humidity\",\"Noise\",\"Pressure\"],\"co2_calibrating\":false,\"date_setup\":1495880328,\"last_setup\":1495880328,\"module_name\":\"Innenraum\",\"firmware\":132,\"last_upgrade\":1495880134,\"wifi_status\":68,\"friend_users\":[\"59297b55ea00a0920c8b4e7d\"]}],\"user\":{\"mail\":\"thepaffy@thepaffy.de\",\"administrative\":{\"lang\":\"de-DE\",\"reg_locale\":\"de-DE\",\"country\":\"DE\",\"unit\":0,\"windunit\":0,\"pressureunit\":0,\"feel_like_algo\":0}}},\"status\":\"ok\",\"time_exec\":0.021092891693115,\"time_server\":1501709269}");
     list<Station> stations = parseDevices(response);
     EXPECT_EQ(1, stations.size());
