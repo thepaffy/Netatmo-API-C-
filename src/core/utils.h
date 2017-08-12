@@ -25,6 +25,7 @@
 #include <map>
 #include <list>
 #include <nlohmann/json.hpp>
+#include <stdexcept>
 
 using json = nlohmann::json;
 
@@ -40,8 +41,9 @@ namespace utils {
  * @param params The query parameters.
  * @param separator The seperator char
  * @return The query string.
+ * @throw std::invalid_argument exception if separator is ' ' or '='.
  */
-std::string buildUrlQuery(const std::map<std::string, std::string> &params, char separator);
+std::string buildUrlQuery(const std::map<std::string, std::string> &params, char separator = '&');
 
 /**
  * Encode the given string to a url.

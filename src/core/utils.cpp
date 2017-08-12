@@ -24,6 +24,7 @@
 #include <cctype>
 #include <iomanip>
 #include <cstdlib>
+#include <iostream>
 
 using namespace std;
 
@@ -31,6 +32,9 @@ namespace netatmoapi {
 namespace utils {
 
 string buildUrlQuery(const map<string, string> &params, char separator) {
+    if (separator == '=' || separator == ' ') {
+        throw invalid_argument("Invalid separator character.");
+    }
     string query;
     for (auto it = params.cbegin(); it != params.cend(); ++it) {
         query.append(it->first);
@@ -89,8 +93,8 @@ list<Station> parseDevices(const json &response) {
                     string name = jsonModule["module_name"];
                     string id = jsonModule["_id"];
                     string type = jsonModule["type"];
-                    uint8_t batteryPercent = jsonModule["battery_percent"];
-                    uint8_t rfStatus = jsonModule["rf_status"];
+                    int16_t batteryPercent = jsonModule["battery_percent"];
+                    int16_t rfStatus = jsonModule["rf_status"];
 
                     Measures measures;
                     try {
@@ -126,7 +130,7 @@ Measures parseMeasures(const json &dashbordData, const string &moduleType) {
         measures.mDateMaxTemp = dashbordData[params::cTypeDateMaxTemp];
         measures.mCo2 = dashbordData[params::cTypeCo2];
         measures.mPressure = dashbordData[params::cTypePressure];
-        measures.mPressureTrend = Measures::convertTrendFromString(dashbordData[params::cTypeTemperatureTrend]);
+        measures.mPressureTrend = Measures::convertTrendFromString(dashbordData[params::cTypePressureTrend]);
         measures.mAbsolutePressure = dashbordData[params::cTypeAbsolutePressure];
         measures.mNoise = dashbordData[params::cTypeNoise];
         measures.mHumidity = dashbordData[params::cTypeHumidity];

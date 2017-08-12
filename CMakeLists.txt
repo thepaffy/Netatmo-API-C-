@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.5.0)
 
 project(netatmoapi++)
 
@@ -7,6 +7,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 
 add_subdirectory(src)
 add_subdirectory(examples)
+add_subdirectory(tests)
 
 # add a target to generate API documentation with Doxygen
 find_package(Doxygen)

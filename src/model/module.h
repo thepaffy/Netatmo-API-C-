@@ -51,7 +51,7 @@ public:
      * @param batteryPercent The battery status of the module.
      * @param rfStatus The wifi status of the module.
      */
-    explicit Module(std::string &&name, std::string &&id, std::string &&type, std::uint8_t batteryPercent = -1, std::uint8_t rfStatus = -1);
+    explicit Module(std::string &&name, std::string &&id, std::string &&type, std::int16_t batteryPercent = -1, std::int16_t rfStatus = -1);
 
     /**
      * Copy constructor.
@@ -117,13 +117,13 @@ public:
      * Returns the battery state of the module.
      * @return The barrery state.
      */
-    std::uint8_t batteryPercent() const;
+    std::int16_t batteryPercent() const;
 
     /**
      * Sets the battery state of the module.
      * @param batteryPercent The battery state.
      */
-    void setBatteryPercent(std::uint8_t batteryPercent);
+    void setBatteryPercent(std::int16_t batteryPercent);
 
     /**
      * Returns the wifi state of the module.
@@ -132,7 +132,7 @@ public:
      *
      * @return The wifi state.
      */
-    std::uint8_t rfStatus() const;
+    std::int16_t rfStatus() const;
 
     /**
      * Sets the wifi state of the module
@@ -141,7 +141,7 @@ public:
      *
      * @param rfStatus
      */
-    void setRfStatus(std::uint8_t rfStatus);
+    void setRfStatus(std::int16_t rfStatus);
 
     /**
      * Returns the measures of the module.
