@@ -48,7 +48,7 @@ add_library(${PROJECT_NAME} SHARED ${netatmoapi_SRCS} ${netatmoapi_core_HDRS} ${
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_VERSION_STRING} SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
 target_link_libraries(${PROJECT_NAME} PRIVATE curl)
 
-install(TARGETS ${PROJECT_NAME} DESTINATION "lib")
-install(FILES ${netatmoapi_core_HDRS} DESTINATION "include/netatmo++/core")
-install(FILES ${netatmoapi_model_HDRS} DESTINATION "include/netatmo++/model")
-install(FILES ${netatmoapi_exceptions_HDRS} DESTINATION "include/netatmo++/exceptions")
+install(TARGETS ${PROJECT_NAME} DESTINATION ${INSTALL_LIB_DIR})
+install(FILES ${netatmoapi_core_HDRS} DESTINATION ${INSTALL_INCLUDE_DIR})
+install(FILES ${netatmoapi_model_HDRS} DESTINATION ${INSTALL_INCLUDE_DIR})
+install(FILES ${netatmoapi_exceptions_HDRS} DESTINATION ${INSTALL_INCLUDE_DIR})
