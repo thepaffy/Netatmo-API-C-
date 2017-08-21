@@ -12,4 +12,4 @@ file(GLOB example_SRCS
 add_executable(${PROJECT_NAME} ${example_SRCS})
 
 target_link_libraries(${PROJECT_NAME} netatmoapi++)
-install(TARGETS ${PROJECT_NAME} DESTINATION "bin")
+install(TARGETS ${PROJECT_NAME} DESTINATION ${INSTALL_BIN_DIR})

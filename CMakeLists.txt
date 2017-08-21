@@ -5,6 +5,12 @@ project(netatmoapi++)
 add_definitions(-std=c++14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 
+# Offer the user the choice of overriding the installation directories
+set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
+set(INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
+set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
+set(INSTALL_DOC_DIR share/doc CACHE PATH "Installation directory for documentation files")
+
 add_subdirectory(src)
 add_subdirectory(examples)
 add_subdirectory(tests)
@@ -29,6 +35,6 @@ if(BUILD_DOCUMENTATION)
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM)
 
-    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/netatmo++-html DESTINATION doc OPTIONAL)
-    install(FILES ${doxygen_error} DESTINATION doc OPTIONAL)
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/netatmo++-html DESTINATION ${INSTALL_DOC_DIR} OPTIONAL)
+    install(FILES ${doxygen_error} DESTINATION ${INSTALL_DOC_DIR} OPTIONAL)
 endif()
