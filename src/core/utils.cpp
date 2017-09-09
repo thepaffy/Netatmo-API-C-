@@ -98,7 +98,7 @@ list<Station> parseDevices(const json &response) {
 
                     Measures measures;
                     try {
-                        measures = parseMeasures(jsonStation["dashboard_data"], type);
+                        measures = parseMeasures(jsonModule["dashboard_data"], type);
                     } catch (const TypeNotSupportedException &ex) {
 #if !defined(NDEBUG)
                         cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
