@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
                     cout << "Pressure trend: " << Measures::convertTrendToString(measures.mPressureTrend) << "\n";
                     cout << "Absolute pressure: " << measures.mAbsolutePressure << "mbar\n";
                     cout << "Noise: " << measures.mNoise << "dB\n";
-                    cout << "Hunidity: " << measures.mHumidity << "%\n";
+                    cout << "Humidity: " << measures.mHumidity << "%\n";
                 } else if (type == Module::sTypeOutdoor) {
                     cout << "Temperature: " << measures.mTemperature << "°C\n";
                     cout << "Temperature trend: " << Measures::convertTrendToString(measures.mTemperatureTrend) << "\n";
