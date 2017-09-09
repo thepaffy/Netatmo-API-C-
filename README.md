@@ -3,7 +3,7 @@
 This library is a client implementation of the [Netatmo](https://netatmo.com) API in C++.
 A discription of the API can be found [here](https://dev.netatmo.com/resources/technical/introduction).
 
-In Version 1.0.0 only the Authentication and parts of the Weather Station API are implementet. Currently the rain gauge and wind gauge are supported. The support for these modules is planned for Version 1.1.0 and 1.2.0.
+In Version 1.0.0 only the Authentication and parts of the Weather Station API are implementet. Currently the wind gauge is not supported. The support for this module is planned for Version 1.1.0.
 
 Feel free to report bugs! If you are owner of a Netatmo Camera, Thermostat or Healthy Home Coach, please fork this repository and make a pull request.
 
