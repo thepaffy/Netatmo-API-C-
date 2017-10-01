@@ -161,7 +161,7 @@ void NAApiClient::setExpiresIn(int64_t expiresIn) {
     d->mExpiresIn = expiresIn;
 }
 
-void NAApiClient::login() {
+void NAApiClient::login(const string &scope) {
     if (username().empty()) {
         throw LoginException("Username not set.", LoginException::username);
     }
@@ -182,6 +182,9 @@ void NAApiClient::login() {
         { "username", username() },
         { "password", password() }
     };
+    if (!scope.empty()) {
+        params.emplace("scope", scope);
+    }
 
     json response;
     try {

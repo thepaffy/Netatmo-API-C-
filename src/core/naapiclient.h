@@ -189,7 +189,7 @@ public:
      * @throw CurlException Rethrown from get().
      * @throw ResponseException Rethrown from get().
      */
-    void login();
+    void login(const std::string &scope = std::string());
 
     /**
      * This function updates the session via the request token api.
