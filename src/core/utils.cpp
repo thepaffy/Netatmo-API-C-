@@ -147,7 +147,10 @@ Measures parseMeasures(const json &dashbordData, const string &moduleType) {
         measures.mSumRain24 = dashbordData[params::cTypeRainSum24];
         measures.mSumRain1 = dashbordData[params::cTypeRainSum1];
     } else if (moduleType == Module::sTypeWindGauge) {
-        throw TypeNotSupportedException("Type currently not supported.", moduleType);
+        measures.mWindStrength = dashbordData[params::cTypeWindStrength];
+        measures.mWindAngle = dashbordData[params::cTypeWindAngle];
+        measures.mGustStrength = dashbordData[params::cTypeGustStrength];
+        measures.mGustAngle = dashbordData[params::cTypeGustAngle];
     } else {
         throw TypeNotSupportedException("Type not supported.", moduleType);
     }
