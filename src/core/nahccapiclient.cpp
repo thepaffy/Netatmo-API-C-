@@ -47,7 +47,33 @@ NAHCCApiClient::NAHCCApiClient(NAHCCApiClient &&o) noexcept :
 }
 
 json NAHCCApiClient::requestHomeCoachsData(const string &deviceId) {
+    try {
+        if (time(nullptr) >= expiresIn()) {
+            updateSession();
+        }
+    } catch (const LoginException &ex) {
+#if !defined(NDEBUG)
+        cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
+        cerr << "Error: " << ex.what() << "\n";
+#endif
+        throw;
+    }
 
+    map<string, string> params;
+    params.emplace("access_token", accessToken());
+    if (!deviceId.empty()) {
+        params.emplace("device_id", deviceId);
+    }
+
+    try {
+        return get(NAHCCApiClient::sUrlGetHomeCoachsData, params);
+    } catch (const exception &ex) {
+#if !defined(NDEBUG)
+        cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
+        cerr << "Error: " << ex.what() << "\n";
+#endif
+        throw;
+    }
 }
 
 NAHCCApiClient &NAHCCApiClient::operator =(const NAHCCApiClient &o) {

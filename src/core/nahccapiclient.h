@@ -23,6 +23,12 @@
 
 namespace netatmoapi {
 
+/**
+ * @brief This class handles the healty home coach part of the netatmo api.
+ *
+ * The class is derived from netatmoapi::NAApiClient and has additional
+ * functions to request the users healty home coach data..
+ */
 class NAHCCApiClient : public NAApiClient {
 public:
     /**
