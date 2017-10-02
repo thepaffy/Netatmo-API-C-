@@ -101,6 +101,28 @@ list<Station> parseDevices(const json &response) {
     return devices;
 }
 
+list<Station> parseHCCDevices(const json &response) {
+    list<Station> devices;
+
+    if (response.find("body") != response.end()) {
+        json jsonBody = response["body"];
+        if (jsonBody.find("devices") != jsonBody.end()) {
+            json jsonStations = jsonBody["devices"];
+            for (const json &jsonStation: jsonStations) {
+                Measures measures = parseMeasures(jsonStation["dashboard_data"], jsonStation["type"]);
+                Station station(forward<string>(jsonStation["name"]), forward<string>(jsonStation["_id"]));
+                Module module(forward<string>(jsonStation["module_name"]), forward<string>(jsonStation["_id"]), forward<string>(jsonStation["type"]));
+                module.setMeasures(move(measures));
+                station.addModule(move(module));
+
+                devices.emplace_back(move(station));
+            }
+        }
+    }
+
+    return devices;
+}
+
 Measures parseMeasures(const json &dashbordData, const string &moduleType) {
     Measures measures;
     measures.mTimeStamp = dashbordData[params::cTypeTimeUtc];
