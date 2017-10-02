@@ -204,6 +204,13 @@ public:
      */
     static const std::string sTypeIndoor;
 
+    /**
+     * Healthy home coach module.
+     *
+     * Value: "NHC"
+     */
+    static const std::string sTypeHomeCoach;
+
 private:
     std::unique_ptr<ModulePrivate> d;
 };

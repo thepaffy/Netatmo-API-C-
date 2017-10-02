@@ -55,6 +55,7 @@ const string Module::sTypeOutdoor = "NAModule1";
 const string Module::sTypeWindGauge = "NAModule2";
 const string Module::sTypeRainGauge = "NAModule3";
 const string Module::sTypeIndoor = "NAModule4";
+const string Module::sTypeHomeCoach = "NHC";
 
 Module::Module() :
     d(new ModulePrivate(-1, -1)){
