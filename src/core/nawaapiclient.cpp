@@ -46,8 +46,49 @@ NAWAApiClient::NAWAApiClient(NAWAApiClient &&o) noexcept :
     NAApiClient(move(o)) {
 }
 
-json NAWAApiClient::requestPublicData(double latNe, double lonNe, double latSw, double lonSw, std::list<string> requiredData, bool filter) {
+json NAWAApiClient::requestPublicData(double latNe, double lonNe, double latSw, double lonSw, list<string> requiredData, bool filter) {
+    try {
+        if (time(nullptr) >= expiresIn()) {
+            updateSession();
+        }
+    } catch (const LoginException &ex) {
+#if !defined(NDEBUG)
+        cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
+        cerr << "Error: " << ex.what() << "\n";
+#endif
+        throw;
+    }
 
+    map<string, string> params = {
+        { "access_token", accessToken() },
+        { "lat_ne", to_string(latNe) },
+        { "lon_ne", to_string(lonNe) },
+        { "lat_sw", to_string(latSw) },
+        { "lon_sw", to_string(lonSw) }
+    };
+    if (!requiredData.empty()) {
+        string data;
+        for (auto it = requiredData.cbegin(); it != requiredData.cend(); ++it) {
+            data.append(*it);
+            if (next(it) != requiredData.cend()) {
+                data.append(", ");
+            }
+        }
+        params.emplace("required_data", data);
+    }
+    if (filter) {
+        params.emplace("filter", "true");
+    }
+
+    try {
+        return get(NAWAApiClient::sUrlGetPublicData, params);
+    } catch (const exception &ex) {
+#if !defined(NDEBUG)
+        cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
+        cerr << "Error: " << ex.what() << "\n";
+#endif
+        throw;
+    }
 }
 
 NAWAApiClient &NAWAApiClient::operator =(const NAWAApiClient &o) {
