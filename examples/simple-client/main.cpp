@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
     try {
         naWSApiClient->login();
         json stationsData = naWSApiClient->requestStationsData();
-        list<Station> stations = utils::parseDevices(stationsData);
+        list<Station> stations = utils::parseWSDevices(stationsData);
         for (const Station &station: stations) {
             cout << "====================Station begin======================\n";
             cout << "Station name: " << station.name() << "\n";

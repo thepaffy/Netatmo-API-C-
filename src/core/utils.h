@@ -57,7 +57,7 @@ std::string urlEncode(const std::string &toEncode);
  * @param response The json response from NAWSApiClient::requestStationsData().
  * @return A parsed list of Stations.
  */
-std::list<Station> parseDevices(const json &response);
+std::list<Station> parseWSDevices(const json &response);
 
 /**
  * Parses the dashboard data of a module into a measure

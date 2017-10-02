@@ -65,7 +65,7 @@ string urlEncode(const string &toEncode) {
     return escaped.str();
 }
 
-list<Station> parseDevices(const json &response) {
+list<Station> parseWSDevices(const json &response) {
     list<Station> devices;
 
     if (response.find("body") != response.end()) {
