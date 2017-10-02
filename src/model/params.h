@@ -102,7 +102,7 @@ const std::string cTypeWindStrength = "WindStrength";
 const std::string cTypeGustAngle = "GustAngle";
 
 /**
- * Type gist strength.
+ * Type gust strength.
  */
 const std::string cTypeGustStrength = "GustStrength";
 

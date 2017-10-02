@@ -115,6 +115,11 @@ int main(int argc, char **argv) {
                     cout << "Rain: " << measures.mRain << "mm\n";
                     cout << "Rain sum 1h: " << measures.mSumRain1 << "mm\n";
                     cout << "Rain sum 24h: " << measures.mSumRain24 << "mm\n";
+                } else if (type == Module::sTypeWindGauge) {
+                    cout << "Wind strength: " << measures.mWindStrength << "km\\h\n";
+                    cout << "Wind angle: " << measures.mWindAngle << "°\n";
+                    cout << "Gust strength: " << measures.mGustStrength << "km\\h\n";
+                    cout << "Gust angle: " << measures.mGustAngle << "°\n";
                 }
                 cout << "================Module end=========================\n";
             }
