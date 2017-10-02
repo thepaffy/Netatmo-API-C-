@@ -104,13 +104,22 @@ int main(int argc, char **argv) {
                     cout << "Pressure trend: " << Measures::convertTrendToString(measures.mPressureTrend) << "\n";
                     cout << "Absolute pressure: " << measures.mAbsolutePressure << "mbar\n";
                     cout << "Noise: " << measures.mNoise << "dB\n";
-                    cout << "Hunidity: " << measures.mHumidity << "%\n";
+                    cout << "Humidity: " << measures.mHumidity << "%\n";
                 } else if (type == Module::sTypeOutdoor) {
                     cout << "Temperature: " << measures.mTemperature << "°C\n";
                     cout << "Temperature trend: " << Measures::convertTrendToString(measures.mTemperatureTrend) << "\n";
                     cout << "Min. temperature: " << measures.mMinTemperature << "°C\n";
                     cout << "Max. temperature: " << measures.mMaxTemperature << "°C\n";
                     cout << "Hunidity: " << measures.mHumidity << "%\n";
+                } else if (type == Module::sTypeRainGauge) {
+                    cout << "Rain: " << measures.mRain << "mm\n";
+                    cout << "Rain sum 1h: " << measures.mSumRain1 << "mm\n";
+                    cout << "Rain sum 24h: " << measures.mSumRain24 << "mm\n";
+                } else if (type == Module::sTypeWindGauge) {
+                    cout << "Wind strength: " << measures.mWindStrength << "km\\h\n";
+                    cout << "Wind angle: " << measures.mWindAngle << "°\n";
+                    cout << "Gust strength: " << measures.mGustStrength << "km\\h\n";
+                    cout << "Gust angle: " << measures.mGustAngle << "°\n";
                 }
                 cout << "================Module end=========================\n";
             }

@@ -98,7 +98,7 @@ list<Station> parseDevices(const json &response) {
 
                     Measures measures;
                     try {
-                        measures = parseMeasures(jsonStation["dashboard_data"], type);
+                        measures = parseMeasures(jsonModule["dashboard_data"], type);
                     } catch (const TypeNotSupportedException &ex) {
 #if !defined(NDEBUG)
                         cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
@@ -143,9 +143,14 @@ Measures parseMeasures(const json &dashbordData, const string &moduleType) {
         measures.mDateMaxTemp = dashbordData[params::cTypeDateMaxTemp];
         measures.mHumidity = dashbordData[params::cTypeHumidity];
     } else if (moduleType == Module::sTypeRainGauge) {
-        throw TypeNotSupportedException("Type currently not supported.", moduleType);
+        measures.mRain = dashbordData[params::cTypeRain];
+        measures.mSumRain24 = dashbordData[params::cTypeRainSum24];
+        measures.mSumRain1 = dashbordData[params::cTypeRainSum1];
     } else if (moduleType == Module::sTypeWindGauge) {
-        throw TypeNotSupportedException("Type currently not supported.", moduleType);
+        measures.mWindStrength = dashbordData[params::cTypeWindStrength];
+        measures.mWindAngle = dashbordData[params::cTypeWindAngle];
+        measures.mGustStrength = dashbordData[params::cTypeGustStrength];
+        measures.mGustAngle = dashbordData[params::cTypeGustAngle];
     } else {
         throw TypeNotSupportedException("Type not supported.", moduleType);
     }
