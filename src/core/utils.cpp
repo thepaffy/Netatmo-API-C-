@@ -134,6 +134,17 @@ Measures parseMeasures(const json &dashbordData, const string &moduleType) {
         measures.mWindAngle = dashbordData[params::cTypeWindAngle];
         measures.mGustStrength = dashbordData[params::cTypeGustStrength];
         measures.mGustAngle = dashbordData[params::cTypeGustAngle];
+    } else if (moduleType == Module::sTypeHomeCoach) {
+        measures.mTemperature = dashbordData[params::cTypeTemperature];
+        measures.mTemperatureTrend = Measures::convertTrendFromString(dashbordData[params::cTypeTemperatureTrend]);
+        measures.mMinTemperature = dashbordData[params::cTypeMinTemp];
+        measures.mMaxTemperature = dashbordData[params::cTypeMaxTemp];
+        measures.mDateMinTemp = dashbordData[params::cTypeDateMinTemp];
+        measures.mDateMaxTemp = dashbordData[params::cTypeDateMaxTemp];
+        measures.mCo2 = dashbordData[params::cTypeCo2];
+        measures.mNoise = dashbordData[params::cTypeNoise];
+        measures.mHumidity = dashbordData[params::cTypeHumidity];
+        measures.mHealthIndex = dashbordData[params::cTypeHealthIndex];
     }
     return measures;
 }
