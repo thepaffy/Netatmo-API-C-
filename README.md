@@ -100,6 +100,10 @@ try {
                 // base or indoor modules
             } else if (type == Module::sTypeOutdoor) {
                 // outdoor module
+            } else if (type == Module::sTypeRainGauge) {
+                // rain gauge module
+            } else if (type == Module::sTypeWindGauge) {
+                // wind gauge module
             }
         }
     }
