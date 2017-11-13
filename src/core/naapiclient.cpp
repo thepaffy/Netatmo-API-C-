@@ -31,8 +31,8 @@ namespace netatmoapi {
 size_t writeCallback(char *buffer, size_t size, size_t nmemb, void *userp) {
     if (userp) {
         ostream *os = static_cast<ostream *>(userp);
-        streamsize len = size * nmemb;
-        if (os->write(static_cast<char *>(buffer), len)) {
+        size_t len = size * nmemb;
+        if (os->write(buffer, streamsize (len))) {
             return len;
         }
     }
@@ -157,7 +157,7 @@ int64_t NAApiClient::expiresIn() const {
     return d->mExpiresIn;
 }
 
-void NAApiClient::setExpiresIn(uint64_t expiresIn) {
+void NAApiClient::setExpiresIn(int64_t expiresIn) {
     d->mExpiresIn = expiresIn;
 }
 
@@ -272,7 +272,7 @@ json NAApiClient::get(const string &url, const std::map<string, string> &params)
         curl_easy_setopt(curl, CURLOPT_FILE, &rawResponse);
         res = curl_easy_perform(curl);
         if (res != CURLE_OK) {
-            throw CurlException("Curl error", (int) res);
+            throw CurlException("Curl error", int {res});
         }
     }
 
@@ -312,7 +312,7 @@ json NAApiClient::post(const string &url, const std::map<string, string> &params
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postField.c_str());
         res = curl_easy_perform(curl);
         if (res != CURLE_OK) {
-            throw CurlException("Curl error", (int) res);
+            throw CurlException("Curl error", int {res});
         }
     }
 
