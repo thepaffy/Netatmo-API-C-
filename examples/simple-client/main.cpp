@@ -44,6 +44,7 @@ vector<string> split(const string &s, char delimiter) {
     return elems;
 }
 
+[[noreturn]]
 void printUsage(const char *programmPath, const char *error) {
     cout << error << "\n";
     cout << "Usage:\n";

@@ -181,7 +181,7 @@ public:
      * Sets the stored expire time.
      * @param expiresIn The expire time.
      */
-    void setExpiresIn(std::uint64_t expiresIn);
+    void setExpiresIn(std::int64_t expiresIn);
 
     /**
      * This function logges in the user via the request token api.

@@ -58,7 +58,7 @@ string urlEncode(const string &toEncode) {
         }
 
         escaped << uppercase;
-        escaped << '%' << setw(2) << int((unsigned char) c);
+        escaped << '%' << setw(2) << int {static_cast<unsigned char>(c)};
         escaped << nouppercase;
     }
 
