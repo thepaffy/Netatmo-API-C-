@@ -110,7 +110,7 @@ int main(int argc, char **argv) {
                     cout << "Temperature trend: " << Measures::convertTrendToString(measures.mTemperatureTrend) << "\n";
                     cout << "Min. temperature: " << measures.mMinTemperature << "°C\n";
                     cout << "Max. temperature: " << measures.mMaxTemperature << "°C\n";
-                    cout << "Hunidity: " << measures.mHumidity << "%\n";
+                    cout << "Humidity: " << measures.mHumidity << "%\n";
                 } else if (type == Module::sTypeRainGauge) {
                     cout << "Rain: " << measures.mRain << "mm\n";
                     cout << "Rain sum 1h: " << measures.mSumRain1 << "mm\n";
