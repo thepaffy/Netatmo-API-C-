@@ -18,7 +18,6 @@
  */
 #include "utils.h"
 #include "model/params.h"
-#include "exceptions/typenotsupportedexception.hpp"
 
 #include <sstream>
 #include <cctype>
@@ -74,15 +73,7 @@ list<Station> parseDevices(const json &response) {
         if (jsonBody.find("devices") != jsonBody.end()) {
             json jsonStations = jsonBody["devices"];
             for (const json &jsonStation: jsonStations) {
-                Measures measures;
-                try {
-                    measures = parseMeasures(jsonStation["dashboard_data"], jsonStation["type"]);
-                } catch (const TypeNotSupportedException &ex) {
-#if !defined(NDEBUG)
-                    cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
-#endif
-                    cerr << "Error: " << ex.what() << " ,type: " << ex.type() << "\n";
-                }
+                Measures measures = parseMeasures(jsonStation["dashboard_data"], jsonStation["type"]);
                 Station station(forward<string>(jsonStation["station_name"]), forward<string>(jsonStation["_id"]));
                 Module mainModule(forward<string>(jsonStation["module_name"]), forward<string>(jsonStation["_id"]), forward<string>(jsonStation["type"]));
                 mainModule.setMeasures(move(measures));
@@ -96,15 +87,7 @@ list<Station> parseDevices(const json &response) {
                     int16_t batteryPercent = jsonModule["battery_percent"];
                     int16_t rfStatus = jsonModule["rf_status"];
 
-                    Measures measures;
-                    try {
-                        measures = parseMeasures(jsonModule["dashboard_data"], type);
-                    } catch (const TypeNotSupportedException &ex) {
-#if !defined(NDEBUG)
-                        cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
-#endif
-                        cerr << "Error: " << ex.what() << " ,type: " << ex.type() << "\n";
-                    }
+                    Measures measures = parseMeasures(jsonModule["dashboard_data"], type);
                     Module module(move(name), move(id), move(type), batteryPercent, rfStatus);
                     module.setMeasures(move(measures));
                     station.addModule(move(module));
@@ -151,8 +134,6 @@ Measures parseMeasures(const json &dashbordData, const string &moduleType) {
         measures.mWindAngle = dashbordData[params::cTypeWindAngle];
         measures.mGustStrength = dashbordData[params::cTypeGustStrength];
         measures.mGustAngle = dashbordData[params::cTypeGustAngle];
-    } else {
-        throw TypeNotSupportedException("Type not supported.", moduleType);
     }
     return measures;
 }
