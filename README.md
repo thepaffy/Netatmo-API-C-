@@ -3,8 +3,8 @@
 This library is a client implementation of the [Netatmo](https://netatmo.com) API in C++.
 A discription of the API can be found [here](https://dev.netatmo.com/resources/technical/introduction).
 
-In Version 1.0.0 only the Authentication and the Weather Station API are implementet.
-The support for the Healthy Home Coach is planned for version 2.0.0.
+In Version 1 only the Authentication and the Weather Station API are implementet.
+The support for the Weather API is planned for Version 2, the support for Healthy Home Coach is planned for version 3
 
 Feel free to report bugs! If you are owner of a Netatmo Camera or Thermostat, please fork this repository and make a pull request.
 
