@@ -6,7 +6,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(nlohmann_json REQUIRED)
 
-set(${PROJECT_NAME}_VERSION_MAJOR 1)
+set(${PROJECT_NAME}_VERSION_MAJOR 2)
 set(${PROJECT_NAME}_VERSION_STRING ${${PROJECT_NAME}_VERSION_MAJOR})
 
 file(GLOB netatmoapi_SRCS
@@ -46,6 +46,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_VERSI
 target_link_libraries(${PROJECT_NAME} PRIVATE curl)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${INSTALL_LIB_DIR})
-install(FILES ${netatmoapi_core_HDRS} DESTINATION ${INSTALL_INCLUDE_DIR})
-install(FILES ${netatmoapi_model_HDRS} DESTINATION ${INSTALL_INCLUDE_DIR})
-install(FILES ${netatmoapi_exceptions_HDRS} DESTINATION ${INSTALL_INCLUDE_DIR})
+install(FILES ${netatmoapi_core_HDRS} DESTINATION ${INSTALL_INCLUDE_DIR}/core)
+install(FILES ${netatmoapi_model_HDRS} DESTINATION ${INSTALL_INCLUDE_DIR}/model)
+install(FILES ${netatmoapi_exceptions_HDRS} DESTINATION ${INSTALL_INCLUDE_DIR}/exceptions)
