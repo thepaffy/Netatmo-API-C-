@@ -80,47 +80,77 @@ int main(int argc, char **argv) {
     try {
         naWSApiClient->login();
         json stationsData = naWSApiClient->requestStationsData();
-        list<Station> stations = utils::parseDevices(stationsData);
+        vector<Station> stations = utils::parseDevices(stationsData);
         for (const Station &station: stations) {
             cout << "====================Station begin======================\n";
-            cout << "Station name: " << station.name() << "\n";
+            cout << "Station name: " << station.stationName() << "\n";
             cout << "Station id: " << station.id() << "\n";
-            list<Module> modules = station.modules();
+            cout << "Module name: " << station.moduleName() << "\n";
+            cout << "Co2 calibrating: " << station.co2Calibrating() << "\n";
+            cout << "Firmware: " << station.firmware() << "\n";
+            cout << "Last upgrade: " << station.lastUpgrade() << "\n";
+            cout << "Wifi status: " << station.wifiStatus() << "\n";
+            const Place &stationPlace = station.place();
+            cout << "Country: " << stationPlace.country() << "\n";
+            cout << "City: " << stationPlace.city() << "\n";
+            cout << "Timezone: " << stationPlace.timezone() << "\n";
+            const Place::Location &stationLocation = stationPlace.location();
+            cout << "Location: " << stationLocation.latitude << "; " << stationLocation.longitude << "\n";
+            cout << "Altitude: " << stationPlace.altitude() << "\n";
+            const Measures &stationMeasures = station.measures();
+            cout << "Temperature: " << stationMeasures.temperature << "°C\n";
+            cout << "Temperature trend: " << Measures::convertTrendToString(stationMeasures.tempTrend) << "\n";
+            cout << "Min. temperature: " << stationMeasures.minTemp << "°C\n";
+            cout << "Max. temperature: " << stationMeasures.maxTemp << "°C\n";
+            cout << "Co2: " << stationMeasures.co2 << "ppm\n";
+            cout << "Pressure: " << stationMeasures.pressure << "mbar\n";
+            cout << "Pressure trend: " << Measures::convertTrendToString(stationMeasures.pressureTrend) << "\n";
+            cout << "Absolute pressure: " << stationMeasures.absolutePressure << "mbar\n";
+            cout << "Noise: " << stationMeasures.noise << "dB\n";
+            cout << "Humidity: " << stationMeasures.humidity << "%\n";
+            vector<Module> modules = station.modules();
             for (const Module &module: modules) {
                 cout << "================Module begin=======================\n";
-                cout << "Module name: " << module.name() << "\n";
+                cout << "Module name: " << module.moduleName() << "\n";
                 cout << "Module id: " << module.id() << "\n";
                 string type = module.type();
                 cout << "Module type: " << type << "\n";
+                cout << "Module battery vp: " << module.batteryVp() << "\n";
                 cout << "Module battery status: " << module.batteryPercent() << "%\n";
                 cout << "Module wireless status: " << module.rfStatus() << "\n";
+                cout << "Module firmware: " << module.firmware() << "\n";
                 Measures measures = module.measures();
-                if (type == Module::sTypeBase || type == Module::sTypeIndoor) {
-                    cout << "Temperature: " << measures.mTemperature << "°C\n";
-                    cout << "Temperature trend: " << Measures::convertTrendToString(measures.mTemperatureTrend) << "\n";
-                    cout << "Min. temperature: " << measures.mMinTemperature << "°C\n";
-                    cout << "Max. temperature: " << measures.mMaxTemperature << "°C\n";
-                    cout << "Co2: " << measures.mCo2 << "ppm\n";
-                    cout << "Pressure: " << measures.mPressure << "mbar\n";
-                    cout << "Pressure trend: " << Measures::convertTrendToString(measures.mPressureTrend) << "\n";
-                    cout << "Absolute pressure: " << measures.mAbsolutePressure << "mbar\n";
-                    cout << "Noise: " << measures.mNoise << "dB\n";
-                    cout << "Humidity: " << measures.mHumidity << "%\n";
+                cout << "Timestamp: " << measures.timeUtc << "\n";
+                if (type == Module::sTypeIndoor) {
+                    cout << "Temperature: " << measures.temperature << "°C\n";
+                    cout << "Temperature trend: " << Measures::convertTrendToString(measures.tempTrend) << "\n";
+                    cout << "Min. temperature: " << measures.minTemp << "°C\n";
+                    cout << "Max. temperature: " << measures.maxTemp << "°C\n";
+                    cout << "Co2: " << measures.co2 << "ppm\n";
+                    cout << "Humidity: " << measures.humidity << "%\n";
                 } else if (type == Module::sTypeOutdoor) {
-                    cout << "Temperature: " << measures.mTemperature << "°C\n";
-                    cout << "Temperature trend: " << Measures::convertTrendToString(measures.mTemperatureTrend) << "\n";
-                    cout << "Min. temperature: " << measures.mMinTemperature << "°C\n";
-                    cout << "Max. temperature: " << measures.mMaxTemperature << "°C\n";
-                    cout << "Humidity: " << measures.mHumidity << "%\n";
+                    cout << "Temperature: " << measures.temperature << "°C\n";
+                    cout << "Temperature trend: " << Measures::convertTrendToString(measures.tempTrend) << "\n";
+                    cout << "Min. temperature: " << measures.minTemp << "°C\n";
+                    cout << "Max. temperature: " << measures.maxTemp << "°C\n";
+                    cout << "Humidity: " << measures.humidity << "%\n";
                 } else if (type == Module::sTypeRainGauge) {
-                    cout << "Rain: " << measures.mRain << "mm\n";
-                    cout << "Rain sum 1h: " << measures.mSumRain1 << "mm\n";
-                    cout << "Rain sum 24h: " << measures.mSumRain24 << "mm\n";
+                    cout << "Rain: " << measures.rain << "mm\n";
+                    cout << "Rain sum 1h: " << measures.sumRain1 << "mm\n";
+                    cout << "Rain sum 24h: " << measures.sumRain24 << "mm\n";
                 } else if (type == Module::sTypeWindGauge) {
-                    cout << "Wind strength: " << measures.mWindStrength << "km\\h\n";
-                    cout << "Wind angle: " << measures.mWindAngle << "°\n";
-                    cout << "Gust strength: " << measures.mGustStrength << "km\\h\n";
-                    cout << "Gust angle: " << measures.mGustAngle << "°\n";
+                    cout << "Wind strength: " << measures.windStrength << "km\\h\n";
+                    cout << "Wind angle: " << measures.windAngle << "°\n";
+                    cout << "Gust strength: " << measures.gustStrength << "km\\h\n";
+                    cout << "Gust angle: " << measures.gustAngle << "°\n";
+                    for (const Measures::WindHistoric &windHistoric: measures.windHistoric)
+                    {
+                        cout << "==============Wind Historic begin==============\n";
+                        cout << "Wind historic timestamp: " << windHistoric.timeUtc << "\n";
+                        cout << "Wind historic strength: " << windHistoric.windStrength << "km\\h\n";
+                        cout << "wind historic angle: " << windHistoric.windAngle << "°\n";
+                        cout << "==============Wind Historic end================\n";
+                    }
                 }
                 cout << "================Module end=========================\n";
             }

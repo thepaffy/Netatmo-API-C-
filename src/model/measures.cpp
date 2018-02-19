@@ -24,26 +24,26 @@ using namespace std;
 namespace netatmoapi {
 
 Measures::Measures() :
-    mTimeStamp(0),
-    mDateMinTemp(0),
-    mDateMaxTemp(0),
-    mTemperature(numeric_limits<double>::min()),
-    mCo2(numeric_limits<double>::min()),
-    mHumidity(numeric_limits<double>::min()),
-    mPressure(numeric_limits<double>::min()),
-    mAbsolutePressure(numeric_limits<double>::min()),
-    mNoise(numeric_limits<double>::min()),
-    mRain(numeric_limits<double>::min()),
-    mWindStrength(numeric_limits<double>::min()),
-    mWindAngle(numeric_limits<double>::min()),
-    mGustStrength(numeric_limits<double>::min()),
-    mGustAngle(numeric_limits<double>::min()),
-    mMinTemperature(numeric_limits<double>::min()),
-    mMaxTemperature(numeric_limits<double>::min()),
-    mTemperatureTrend(Trend::noData),
-    mPressureTrend(Trend::noData),
-    mSumRain1(numeric_limits<double>::min()),
-    mSumRain24(numeric_limits<double>::min())
+    timeUtc(0),
+    dateMinTemp(0),
+    dateMaxTemp(0),
+    temperature(numeric_limits<double>::min()),
+    co2(numeric_limits<double>::min()),
+    humidity(numeric_limits<double>::min()),
+    pressure(numeric_limits<double>::min()),
+    absolutePressure(numeric_limits<double>::min()),
+    noise(numeric_limits<double>::min()),
+    rain(numeric_limits<double>::min()),
+    windStrength(numeric_limits<double>::min()),
+    windAngle(numeric_limits<double>::min()),
+    gustStrength(numeric_limits<double>::min()),
+    gustAngle(numeric_limits<double>::min()),
+    minTemp(numeric_limits<double>::min()),
+    maxTemp(numeric_limits<double>::min()),
+    tempTrend(Trend::noData),
+    pressureTrend(Trend::noData),
+    sumRain1(numeric_limits<double>::min()),
+    sumRain24(numeric_limits<double>::min())
 {
 
 }

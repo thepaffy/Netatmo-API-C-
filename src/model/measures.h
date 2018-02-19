@@ -21,6 +21,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 namespace netatmoapi {
 
@@ -28,6 +29,26 @@ namespace netatmoapi {
  * @brief Container for measures.
  */
 struct Measures {
+    /**
+     * @brief Struct for wind historic
+     */
+    struct WindHistoric {
+        /**
+         * The measure timestamp.
+         */
+        std::uint64_t timeUtc;
+
+        /**
+         * The wind strength value.
+         */
+        double          windStrength;
+
+        /**
+         * The wind angle value.
+         */
+        double          windAngle;
+    };
+
     /**
      * @brief Enum for pressure trend.
      */
@@ -64,102 +85,107 @@ struct Measures {
     /**
      * The measure timestamp.
      */
-    std::uint64_t   mTimeStamp;
+    std::uint64_t   timeUtc;
 
     /**
      * The min temp date.
      */
-    std::uint64_t   mDateMinTemp;
+    std::uint64_t   dateMinTemp;
 
     /**
      * The max temp date.
      */
-    std::uint64_t   mDateMaxTemp;
+    std::uint64_t   dateMaxTemp;
 
     /**
      * The temperature value.
      */
-    double          mTemperature;
+    double          temperature;
 
     /**
      * The CO2 value.
      */
-    double          mCo2;
+    double          co2;
 
     /**
      * The humidity value.
      */
-    double          mHumidity;
+    double          humidity;
 
     /**
      * The pressure value.
      */
-    double          mPressure;
+    double          pressure;
 
     /**
      * The absolute pressure value.
      */
-    double          mAbsolutePressure;
+    double          absolutePressure;
 
     /**
      * The noise value.
      */
-    double          mNoise;
+    double          noise;
 
     /**
      * The rain value.
      */
-    double          mRain;
+    double          rain;
 
     /**
      * The wind strength value.
      */
-    double          mWindStrength;
+    double          windStrength;
 
     /**
      * The wind angle value.
      */
-    double          mWindAngle;
+    double          windAngle;
 
     /**
      * The gust strength value.
      */
-    double          mGustStrength;
+    double          gustStrength;
 
     /**
      * The gust angle value.
      */
-    double          mGustAngle;
+    double          gustAngle;
 
     /**
      * The minimum temperature value.
      */
-    double          mMinTemperature;
+    double          minTemp;
 
     /**
      * The maximum temperature value.
      */
-    double          mMaxTemperature;
+    double          maxTemp;
 
     /**
      * The temperature trend.
      */
-    Trend           mTemperatureTrend;
+    Trend           tempTrend;
 
     /**
      * The pressure trend.
      */
-    Trend           mPressureTrend;
+    Trend           pressureTrend;
 
     /**
      * The rain sum for the last hour.
      */
-    double          mSumRain1;
+    double          sumRain1;
 
     /**
-     * he rain sum for the last 24 hours.
+     * The rain sum for the last 24 hours.
      */
-    double          mSumRain24;
+    double          sumRain24;
+
+    /**
+     * The wind historic.
+     */
+    std::vector<WindHistoric> windHistoric;
 };
 
 }

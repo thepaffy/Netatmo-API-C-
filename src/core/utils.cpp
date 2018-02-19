@@ -65,34 +65,25 @@ string urlEncode(const string &toEncode) {
     return escaped.str();
 }
 
-list<Station> parseDevices(const json &response) {
-    list<Station> devices;
+vector<Station> parseDevices(const json &response) {
+    vector<Station> devices;
 
     if (response.find("body") != response.end()) {
         json jsonBody = response["body"];
         if (jsonBody.find("devices") != jsonBody.end()) {
             json jsonStations = jsonBody["devices"];
             for (const json &jsonStation: jsonStations) {
-                Measures measures = parseMeasures(jsonStation["dashboard_data"], jsonStation["type"]);
-                Station station(forward<string>(jsonStation["station_name"]), forward<string>(jsonStation["_id"]));
-                Module mainModule(forward<string>(jsonStation["module_name"]), forward<string>(jsonStation["_id"]), forward<string>(jsonStation["type"]));
-                mainModule.setMeasures(move(measures));
-                station.addModule(move(mainModule));
+                Station station(jsonStation["_id"], jsonStation["station_name"], jsonStation["module_name"], jsonStation["co2_calibrating"], jsonStation["firmware"], jsonStation["last_upgrade"], jsonStation["wifi_status"]);
+                station.setMeasures(parseMeasures(jsonStation["dashboard_data"], jsonStation["type"]));
 
                 json jsonModules = jsonStation["modules"];
                 for (const json &jsonModule: jsonModules) {
-                    string name = jsonModule["module_name"];
-                    string id = jsonModule["_id"];
-                    string type = jsonModule["type"];
-                    int16_t batteryPercent = jsonModule["battery_percent"];
-                    int16_t rfStatus = jsonModule["rf_status"];
-
-                    Measures measures = parseMeasures(jsonModule["dashboard_data"], type);
-                    Module module(move(name), move(id), move(type), batteryPercent, rfStatus);
-                    module.setMeasures(move(measures));
+                    Module module(jsonModule["_id"], jsonModule["module_name"], jsonModule["type"], jsonModule["battery_vp"], jsonModule["battery_percent"], jsonModule["rf_status"], jsonModule["firmware"]);
+                    module.setMeasures(parseMeasures(jsonModule["dashboard_data"], jsonModule["type"]));
                     station.addModule(move(module));
                 }
 
+                station.setPlace(parsePlace(jsonStation["place"]));
                 devices.emplace_back(move(station));
             }
         }
@@ -103,39 +94,74 @@ list<Station> parseDevices(const json &response) {
 
 Measures parseMeasures(const json &dashbordData, const string &moduleType) {
     Measures measures;
-    measures.mTimeStamp = dashbordData[params::cTypeTimeUtc];
-    if (moduleType == Module::sTypeBase || moduleType == Module::sTypeIndoor) {
-        measures.mTemperature = dashbordData[params::cTypeTemperature];
-        measures.mTemperatureTrend = Measures::convertTrendFromString(dashbordData[params::cTypeTemperatureTrend]);
-        measures.mMinTemperature = dashbordData[params::cTypeMinTemp];
-        measures.mMaxTemperature = dashbordData[params::cTypeMaxTemp];
-        measures.mDateMinTemp = dashbordData[params::cTypeDateMinTemp];
-        measures.mDateMaxTemp = dashbordData[params::cTypeDateMaxTemp];
-        measures.mCo2 = dashbordData[params::cTypeCo2];
-        measures.mPressure = dashbordData[params::cTypePressure];
-        measures.mPressureTrend = Measures::convertTrendFromString(dashbordData[params::cTypePressureTrend]);
-        measures.mAbsolutePressure = dashbordData[params::cTypeAbsolutePressure];
-        measures.mNoise = dashbordData[params::cTypeNoise];
-        measures.mHumidity = dashbordData[params::cTypeHumidity];
+    measures.timeUtc = dashbordData[params::cTypeTimeUtc];
+    if (moduleType == Module::sTypeBase) {
+        measures.temperature = dashbordData[params::cTypeTemperature];
+        measures.tempTrend = Measures::convertTrendFromString(dashbordData[params::cTypeTempTrend]);
+        measures.minTemp = dashbordData[params::cTypeMinTemp];
+        measures.maxTemp = dashbordData[params::cTypeMaxTemp];
+        measures.dateMinTemp = dashbordData[params::cTypeDateMinTemp];
+        measures.dateMaxTemp = dashbordData[params::cTypeDateMaxTemp];
+        measures.co2 = dashbordData[params::cTypeCo2];
+        measures.pressure = dashbordData[params::cTypePressure];
+        measures.pressureTrend = Measures::convertTrendFromString(dashbordData[params::cTypePressureTrend]);
+        measures.absolutePressure = dashbordData[params::cTypeAbsolutePressure];
+        measures.noise = dashbordData[params::cTypeNoise];
+        measures.humidity = dashbordData[params::cTypeHumidity];
     } else if (moduleType == Module::sTypeOutdoor) {
-        measures.mTemperature = dashbordData[params::cTypeTemperature];
-        measures.mTemperatureTrend = Measures::convertTrendFromString(dashbordData[params::cTypeTemperatureTrend]);
-        measures.mMinTemperature = dashbordData[params::cTypeMinTemp];
-        measures.mMaxTemperature = dashbordData[params::cTypeMaxTemp];
-        measures.mDateMinTemp = dashbordData[params::cTypeDateMinTemp];
-        measures.mDateMaxTemp = dashbordData[params::cTypeDateMaxTemp];
-        measures.mHumidity = dashbordData[params::cTypeHumidity];
+        measures.temperature = dashbordData[params::cTypeTemperature];
+        measures.tempTrend = Measures::convertTrendFromString(dashbordData[params::cTypeTempTrend]);
+        measures.minTemp = dashbordData[params::cTypeMinTemp];
+        measures.maxTemp = dashbordData[params::cTypeMaxTemp];
+        measures.dateMinTemp = dashbordData[params::cTypeDateMinTemp];
+        measures.dateMaxTemp = dashbordData[params::cTypeDateMaxTemp];
+        measures.humidity = dashbordData[params::cTypeHumidity];
     } else if (moduleType == Module::sTypeRainGauge) {
-        measures.mRain = dashbordData[params::cTypeRain];
-        measures.mSumRain24 = dashbordData[params::cTypeRainSum24];
-        measures.mSumRain1 = dashbordData[params::cTypeRainSum1];
+        measures.rain = dashbordData[params::cTypeRain];
+        measures.sumRain24 = dashbordData[params::cTypeRainSum24];
+        measures.sumRain1 = dashbordData[params::cTypeRainSum1];
     } else if (moduleType == Module::sTypeWindGauge) {
-        measures.mWindStrength = dashbordData[params::cTypeWindStrength];
-        measures.mWindAngle = dashbordData[params::cTypeWindAngle];
-        measures.mGustStrength = dashbordData[params::cTypeGustStrength];
-        measures.mGustAngle = dashbordData[params::cTypeGustAngle];
+        measures.windStrength = dashbordData[params::cTypeWindStrength];
+        measures.windAngle = dashbordData[params::cTypeWindAngle];
+        measures.gustStrength = dashbordData[params::cTypeGustStrength];
+        measures.gustAngle = dashbordData[params::cTypeGustAngle];
+        measures.windHistoric = parseWindHistoric(dashbordData[params::cTypeWindHistoric]);
+    } else if (moduleType == Module::sTypeIndoor) {
+        measures.temperature = dashbordData[params::cTypeTemperature];
+        measures.tempTrend = Measures::convertTrendFromString(dashbordData[params::cTypeTempTrend]);
+        measures.minTemp = dashbordData[params::cTypeMinTemp];
+        measures.maxTemp = dashbordData[params::cTypeMaxTemp];
+        measures.dateMinTemp = dashbordData[params::cTypeDateMinTemp];
+        measures.dateMaxTemp = dashbordData[params::cTypeDateMaxTemp];
+        measures.co2 = dashbordData[params::cTypeCo2];
+        measures.humidity = dashbordData[params::cTypeHumidity];
     }
     return measures;
+}
+
+vector<Measures::WindHistoric> parseWindHistoric(const json &jsonWindHistory)
+{
+    vector<Measures::WindHistoric> windHistory;
+    for (const json &jsonWindHistoric: jsonWindHistory)
+    {
+        Measures::WindHistoric windHistoric;
+        windHistoric.timeUtc = jsonWindHistoric[params::cTypeTimeUtc];
+        windHistoric.windStrength = jsonWindHistoric[params::cTypeWindStrength];
+        windHistoric.windAngle = jsonWindHistoric[params::cTypeWindAngle];
+        windHistory.emplace_back(windHistoric);
+    }
+    return windHistory;
+}
+
+Place parsePlace(const json &jsonPlace)
+{
+    Place place(jsonPlace["altitude"], jsonPlace["city"], jsonPlace["country"], jsonPlace["timezone"]);
+    json jsonLocation = jsonPlace["location"];
+    Place::Location location;
+    location.longitude = jsonLocation[0];
+    location.latitude = jsonLocation[1];
+    place.setLocation(move(location));
+    return place;
 }
 
 }

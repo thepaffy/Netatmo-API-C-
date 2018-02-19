@@ -23,7 +23,7 @@
 
 #include <string>
 #include <map>
-#include <list>
+#include <vector>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 
@@ -57,7 +57,7 @@ std::string urlEncode(const std::string &toEncode);
  * @param response The json response from NAWSApiClient::requestStationsData().
  * @return A parsed list of Stations.
  */
-std::list<Station> parseDevices(const json &response);
+std::vector<Station> parseDevices(const json &response);
 
 /**
  * Parses the dashboard data of a module into a measure
@@ -67,6 +67,10 @@ std::list<Station> parseDevices(const json &response);
  * @throws TypeNotSupportedException If parsing for the type is not supported.
  */
 Measures parseMeasures(const json &dashbordData, const std::string &moduleType);
+
+std::vector<Measures::WindHistoric> parseWindHistoric(const json &jsonWindHistoric);
+
+Place parsePlace(const json &jsonPlace);
 
 }
 }

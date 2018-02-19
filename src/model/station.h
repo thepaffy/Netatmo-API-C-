@@ -20,15 +20,14 @@
 #define STATION_H
 
 #include "module.h"
+#include "place.h"
 
-#include <list>
+#include <vector>
 #include <string>
 #include <memory>
 #include <stdexcept>
 
 namespace netatmoapi {
-
-struct StationPrivate;
 
 /**
  * @brief This class represents a netatmo weather station.
@@ -39,70 +38,61 @@ struct StationPrivate;
 class Station {
 public:
     /**
-     * Default constructor.
-     */
-    Station();
-
-    /**
      * Constructor.
      * @param name The station name.
      * @param id The station id (MAC-Address).
      */
-    explicit Station(std::string &&name, std::string &&id);
-
-    /**
-     * Copy constructor.
-     * @param o The element to copy.
-     */
-    Station(const Station &o);
-
-    /**
-     * Move constructor.
-     * @param o The element to move.
-     */
-    Station(Station &&o) noexcept;
-
-    /**
-     * Destructor.
-     * Is default.
-     */
-    virtual ~Station() noexcept;
+    explicit Station(const std::string &id, const std::string &stationName, const std::string &moduleName, bool co2Calibrating, std::uint32_t firmware, std::uint64_t lastUpgrade, std::uint16_t wifiStatus);
 
     /**
      * Returns the name of the station,
      * @return The name.
      */
-    std::string name() const;
+    const std::string &stationName() const {
+        return mStationName;
+    }
 
-    /**
-     * Set the name of the station.
-     * @param name The name.
-     */
-    void setName(std::string &&name);
+    const std::string &moduleName() const {
+        return mModuleName;
+    }
 
     /**
      * Returns the id of the station.
      * @return The id.
      */
-    std::string id() const;
+    const std::string &id() const {
+        return mId;
+    }
 
-    /**
-     *Sets the id of the station.
-     * @param id The id.
-     */
-    void setId(std::string &&id);
+    bool co2Calibrating() const {
+        return mCo2Calibrating;
+    }
+
+    std::uint32_t firmware() const {
+        return mFirmware;
+    }
+
+    std::uint64_t lastUpgrade() const {
+        return mLastUpgrade;
+    }
+
+    std::uint16_t wifiStatus() const {
+        return mWifiStatus;
+    }
 
     /**
      * Returns the modules of the station.
      * @return A std::list with all [Modules](@ref netatmoapi::Module) of the station.
      */
-    std::list<Module> modules() const;
+    const std::vector<Module> &modules() const {
+        return mModules;
+    }
 
     /**
      * Sets the modules of the station.
      * @param modules A std::list with all [Modules](@ref netatmoapi::Module) for the Station.
      */
-    void setModules(std::list<Module> &&modules);
+    void setModules(std::vector<Module> &&modules);
 
     /**
      * Add a module to the station.
@@ -110,22 +100,29 @@ public:
      */
     void addModule(Module &&module);
 
-    /**
-     * Copy assign operator.
-     * @param o The Element to copy.
-     * @return This element as reference.
-     */
-    Station &operator =(const Station &o);
+    const Measures &measures() const {
+        return mMeasures;
+    }
 
-    /**
-     * Move assign operator.
-     * @param o The Element to move.
-     * @return This element as reference.
-     */
-    Station &operator =(Station &&o) noexcept;
+    void setMeasures(Measures &&measures);
+
+    const Place &place() const {
+        return mPlace;
+    }
+
+    void setPlace(Place &&place);
 
 private:
-    std::unique_ptr<StationPrivate> d;
+    std::string mId;
+    std::string mStationName;
+    std::string mModuleName;
+    std::vector<Module> mModules;
+    Measures mMeasures;
+    bool mCo2Calibrating;
+    std::uint32_t mFirmware;
+    std::uint64_t mLastUpgrade;
+    std::uint16_t mWifiStatus;
+    Place mPlace;
 };
 
 }

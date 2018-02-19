@@ -22,115 +22,24 @@ using namespace std;
 
 namespace netatmoapi {
 
-struct ModulePrivate {
-    ModulePrivate(int16_t batteryPercent, int16_t rfStatus) :
-        mBatteryPercent(batteryPercent),
-        mRfStatus(rfStatus)
-    {}
-    ModulePrivate(string &&name, string &&id, string &&type, int16_t batteryPercent, int16_t rfStatus) :
-        mName(forward<string>(name)),
-        mId(forward<string>(id)),
-        mType(forward<string>(type)),
-        mBatteryPercent(batteryPercent),
-        mRfStatus(rfStatus)
-    {}
-    ModulePrivate(const ModulePrivate &o) :
-        mName(o.mName),
-        mId(o.mId),
-        mType(o.mType),
-        mBatteryPercent(o.mBatteryPercent),
-        mRfStatus(o.mRfStatus),
-        mMeasures(o.mMeasures)
-    {}
-    string mName;
-    string mId;
-    string mType;
-    int16_t mBatteryPercent;
-    int16_t mRfStatus;
-    Measures mMeasures;
-};
-
 const string Module::sTypeBase = "NAMain";
 const string Module::sTypeOutdoor = "NAModule1";
 const string Module::sTypeWindGauge = "NAModule2";
 const string Module::sTypeRainGauge = "NAModule3";
 const string Module::sTypeIndoor = "NAModule4";
 
-Module::Module() :
-    d(new ModulePrivate(-1, -1)){
-}
-
-Module::Module(string &&name, string &&id, string &&type, int16_t batteryPercent, int16_t rfStatus) :
-    d(new ModulePrivate(forward<string>(name), forward<string>(id), forward<string>(type), batteryPercent, rfStatus)) {
-
-}
-
-Module::Module(const Module &o) :
-    d(new ModulePrivate(*o.d)) {
-}
-
-Module::Module(Module &&o) noexcept :
-    d(move(o.d)){
-}
-
-Module::~Module() noexcept = default;
-
-string Module::name() const {
-    return d->mName;
-}
-
-void Module::setName(string &&name) {
-    d->mName = move(name);
-}
-
-string Module::id() const {
-    return d->mId;
-}
-
-void Module::setId(string &&id) {
-    d->mId = move(id);
-}
-
-string Module::type() const {
-    return d->mType;
-}
-
-void Module::setType(string &&type) {
-    d->mType = move(type);
-}
-
-int16_t Module::batteryPercent() const {
-    return d->mBatteryPercent;
-}
-
-void Module::setBatteryPercent(int16_t batteryPercent) {
-    d->mBatteryPercent = batteryPercent;
-}
-
-int16_t Module::rfStatus() const {
-    return d->mRfStatus;
-}
-
-void Module::setRfStatus(int16_t rfStatus) {
-    d->mRfStatus = rfStatus;
-}
-
-Measures Module::measures() const {
-    return d->mMeasures;
+Module::Module(const string &id, const string &moduleName, const string &type, uint16_t batteryVp, uint16_t batteryPercent, uint16_t rfStatus, uint32_t firmware) :
+    mId(id),
+    mModuleName(moduleName),
+    mType(type),
+    mBatteryVp(batteryVp),
+    mBatteryPercent(batteryPercent),
+    mRfStatus(rfStatus),
+    mFirmware(firmware) {
 }
 
 void Module::setMeasures(Measures &&measures) {
-    d->mMeasures = move(measures);
-}
-
-Module &Module::operator =(const Module &o) {
-    d.reset(new ModulePrivate(*o.d));
-    return *this;
-}
-
-Module &Module::operator =(Module &&o) noexcept {
-    d = move(o.d);
-    return *this;
+    mMeasures = move(measures);
 }
 
 }

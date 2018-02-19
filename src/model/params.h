@@ -109,7 +109,7 @@ const std::string cTypeGustStrength = "GustStrength";
 /**
  * Type temperature trend.
  */
-const std::string cTypeTemperatureTrend = "temp_trend";
+const std::string cTypeTempTrend = "temp_trend";
 
 /**
  * Type pressure trend.
@@ -130,6 +130,11 @@ const std::string cTypeDateMinTemp = "date_min_temp";
  * Type date max temperature.
  */
 const std::string cTypeDateMaxTemp = "date_max_temp";
+
+/**
+ * Type wind historic.
+ */
+const std::string cTypeWindHistoric = "WindHistoric";
 
 }
 }

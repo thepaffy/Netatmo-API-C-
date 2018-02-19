@@ -16,6 +16,7 @@ file(GLOB netatmoapi_SRCS
     model/station.cpp
     model/module.cpp
     model/measures.cpp
+    model/place.cpp
 )
 
 file(GLOB netatmoapi_core_HDRS
@@ -33,6 +34,7 @@ file(GLOB netatmoapi_model_HDRS
     model/module.h
     model/measures.h
     model/params.h
+    model/place.h
 )
 
 file(GLOB netatmoapi_exceptions_HDRS

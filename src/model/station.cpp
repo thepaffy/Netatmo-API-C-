@@ -22,75 +22,31 @@ using namespace std;
 
 namespace netatmoapi {
 
-struct StationPrivate {
-    StationPrivate() = default;
-    StationPrivate(string &&name, string &&id) noexcept :
-        mName(forward<string>(name)),
-        mId(forward<string>(id))
-    {}
-    StationPrivate(const StationPrivate &o) :
-        mId(o.mId)
-    {}
-    string mName;
-    string mId;
-    list<Module> mModules;
-};
 
-Station::Station() :
-    d(new StationPrivate) {
-
+Station::Station(const std::string &id, const std::string &stationName, const std::string &moduleName, bool co2Calibrating, std::uint32_t firmware, std::uint64_t lastUpgrade, std::uint16_t wifiStatus) :
+    mId(id),
+    mStationName(stationName),
+    mModuleName(moduleName),
+    mCo2Calibrating(co2Calibrating),
+    mFirmware(firmware),
+    mLastUpgrade(lastUpgrade),
+    mWifiStatus(wifiStatus) {
 }
 
-Station::Station(string &&name, string &&id) :
-    d(new StationPrivate(forward<string>(name), forward<string>(id))) {
-}
-
-Station::Station(const Station &o) :
-    d(new StationPrivate(*o.d)) {
-}
-
-Station::Station(Station &&o) noexcept :
-    d(move(o.d)) {
-}
-
-Station::~Station() noexcept = default;
-
-string Station::name() const {
-    return d->mName;
-}
-
-void Station::setName(string &&name) {
-    d->mName = move(name);
-}
-
-string Station::id() const {
-    return d->mId;
-}
-
-void Station::setId(string &&id) {
-    d->mId = move(id);
-}
-
-list<Module> Station::modules() const {
-    return d->mModules;
-}
-
-void Station::setModules(list<Module> &&modules) {
-    d->mModules = move(modules);
+void Station::setModules(vector<Module> &&modules) {
+    mModules = move(modules);
 }
 
 void Station::addModule(Module &&module) {
-    d->mModules.emplace_back(move(module));
+    mModules.emplace_back(move(module));
 }
 
-Station &Station::operator =(const Station &o) {
-    d.reset(new StationPrivate(*o.d));
-    return *this;
+void Station::setMeasures(Measures &&measures) {
+    mMeasures = move(measures);
 }
 
-Station &Station::operator =(Station &&o) noexcept {
-    d = move(o.d);
-    return *this;
+void Station::setPlace(Place &&place) {
+    mPlace = move(place);
 }
 
 }

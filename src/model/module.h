@@ -27,8 +27,6 @@
 
 namespace netatmoapi {
 
-struct ModulePrivate;
-
 /**
  * @brief This class represents a netatmo module.
  *
@@ -39,11 +37,6 @@ struct ModulePrivate;
 class Module {
 public:
     /**
-     * Default constructor.
-     */
-    Module();
-
-    /**
      * Constructor.
      * @param name The module name.
      * @param id The module id (MAC-Address).
@@ -51,49 +44,23 @@ public:
      * @param batteryPercent The battery status of the module.
      * @param rfStatus The wifi status of the module.
      */
-    explicit Module(std::string &&name, std::string &&id, std::string &&type, std::int16_t batteryPercent = -1, std::int16_t rfStatus = -1);
-
-    /**
-     * Copy constructor.
-     * @param o The element to copy.
-     */
-    Module(const Module &o);
-
-    /**
-     * Move constructor.
-     * @param o The element to move.
-     */
-    Module(Module &&o) noexcept;
-
-    /**
-     * Destructor.
-     * Is default.
-     */
-    virtual ~Module() noexcept;
+    explicit Module(const std::string &id, const std::string &moduleName, const std::string &type, std::uint16_t batteryVp, std::uint16_t batteryPercent, std::uint16_t rfStatus, std::uint32_t firmware);
 
     /**
      * Returns the name of the module.
      * @return The name.
      */
-    std::string name() const;
-
-    /**
-     * Sets the name of the module.
-     * @param name The name.
-     */
-    void setName(std::string &&name);
+    const std::string &moduleName() const {
+        return mModuleName;
+    }
 
     /**
      * Returns the id of the module.
      * @return The id.
      */
-    std::string id() const;
-
-    /**
-     * Sets the id of the module.
-     * @param id The id.
-     */
-    void setId(std::string &&id);
+    const std::string &id() const {
+        return mId;
+    }
 
     /**
      * Returns the type the module.
@@ -102,72 +69,50 @@ public:
      *
      * @return The type.
      */
-    std::string type() const;
+    const std::string &type() const {
+        return mType;
+    }
 
-    /**
-     * Sets the type the module.
-     *
-     * @see [sTypeBase](@ref netatmoapi::Module::sTypeBase), [sTypeOutdoor](@ref netatmoapi::Module::sTypeOutdoor), [sTypeWindGauge](@ref netatmoapi::Module::sTypeWindGauge), [sTypeRainGauge](@ref netatmoapi::Module::sTypeRainGauge) and [sTypeIndoor](@ref netatmoapi::Module::sTypeIndoor).
-     *
-     * @param type The type.
-     */
-    void setType(std::string &&type);
+    std::uint16_t batteryVp() const {
+        return mBatteryVp;
+    }
 
     /**
      * Returns the battery state of the module.
      * @return The barrery state.
      */
-    std::int16_t batteryPercent() const;
+    std::uint16_t batteryPercent() const {
+        return mBatteryPercent;
+    }
 
     /**
-     * Sets the battery state of the module.
-     * @param batteryPercent The battery state.
+     * Returns the rf state of the module.
+     *
+     * A small value indicates a good rf signal.
+     *
+     * @return The rf state.
      */
-    void setBatteryPercent(std::int16_t batteryPercent);
+    std::uint16_t rfStatus() const {
+        return mRfStatus;
+    }
 
-    /**
-     * Returns the wifi state of the module.
-     *
-     * A small value indicates a good wifi signal.
-     *
-     * @return The wifi state.
-     */
-    std::int16_t rfStatus() const;
-
-    /**
-     * Sets the wifi state of the module
-     *
-     * A small value indicates a good wifi signal.
-     *
-     * @param rfStatus
-     */
-    void setRfStatus(std::int16_t rfStatus);
+    std::uint32_t firmware() const {
+        return mFirmware;
+    }
 
     /**
      * Returns the measures of the module.
      * @return The measures.
      */
-    Measures measures() const;
+    const Measures &measures() const {
+        return mMeasures;
+    }
 
     /**
      * Sets the measures of the module.
      * @param measures
      */
     void setMeasures(Measures &&measures);
-
-    /**
-     * Copy assignment operator.
-     * @param o The element to copy.
-     * @return This element as reference.
-     */
-    Module &operator =(const Module &o);
-
-    /**
-     * Move assignment operator.
-     * @param o The element to move.
-     * @return This element as reference.
-     */
-    Module &operator =(Module &&o) noexcept;
 
     /**
      * Base module.
@@ -205,7 +150,14 @@ public:
     static const std::string sTypeIndoor;
 
 private:
-    std::unique_ptr<ModulePrivate> d;
+    std::string mId;
+    std::string mModuleName;
+    std::string mType;
+    std::uint16_t mBatteryVp;
+    std::uint16_t mBatteryPercent;
+    std::uint16_t mRfStatus;
+    std::uint32_t mFirmware;
+    Measures mMeasures;
 };
 
 }
