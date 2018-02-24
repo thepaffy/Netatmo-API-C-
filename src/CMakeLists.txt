@@ -11,6 +11,7 @@ set(${PROJECT_NAME}_VERSION_STRING ${${PROJECT_NAME}_VERSION_MAJOR})
 
 file(GLOB netatmoapi_SRCS
     core/naapiclient.cpp
+    core/nahccapiclient.cpp
     core/nawsapiclient.cpp
     core/utils.cpp
     model/station.cpp
@@ -20,6 +21,7 @@ file(GLOB netatmoapi_SRCS
 
 file(GLOB netatmoapi_core_HDRS
     core/naapiclient.h
+    core/nahccapiclient.h
     core/nawsapiclient.h
     core/utils.h
 )

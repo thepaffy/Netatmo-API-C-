@@ -101,6 +101,28 @@ list<Station> parseDevices(const json &response) {
     return devices;
 }
 
+list<Station> parseHCCDevices(const json &response) {
+    list<Station> devices;
+
+    if (response.find("body") != response.end()) {
+        json jsonBody = response["body"];
+        if (jsonBody.find("devices") != jsonBody.end()) {
+            json jsonStations = jsonBody["devices"];
+            for (const json &jsonStation: jsonStations) {
+                Measures measures = parseMeasures(jsonStation["dashboard_data"], jsonStation["type"]);
+                Station station(forward<string>(jsonStation["name"]), forward<string>(jsonStation["_id"]));
+                Module module(forward<string>(jsonStation["module_name"]), forward<string>(jsonStation["_id"]), forward<string>(jsonStation["type"]));
+                module.setMeasures(move(measures));
+                station.addModule(move(module));
+
+                devices.emplace_back(move(station));
+            }
+        }
+    }
+
+    return devices;
+}
+
 Measures parseMeasures(const json &dashbordData, const string &moduleType) {
     Measures measures;
     measures.mTimeStamp = dashbordData[params::cTypeTimeUtc];
@@ -134,6 +156,17 @@ Measures parseMeasures(const json &dashbordData, const string &moduleType) {
         measures.mWindAngle = dashbordData[params::cTypeWindAngle];
         measures.mGustStrength = dashbordData[params::cTypeGustStrength];
         measures.mGustAngle = dashbordData[params::cTypeGustAngle];
+    } else if (moduleType == Module::sTypeHomeCoach) {
+        measures.mTemperature = dashbordData[params::cTypeTemperature];
+        measures.mTemperatureTrend = Measures::convertTrendFromString(dashbordData[params::cTypeTemperatureTrend]);
+        measures.mMinTemperature = dashbordData[params::cTypeMinTemp];
+        measures.mMaxTemperature = dashbordData[params::cTypeMaxTemp];
+        measures.mDateMinTemp = dashbordData[params::cTypeDateMinTemp];
+        measures.mDateMaxTemp = dashbordData[params::cTypeDateMaxTemp];
+        measures.mCo2 = dashbordData[params::cTypeCo2];
+        measures.mNoise = dashbordData[params::cTypeNoise];
+        measures.mHumidity = dashbordData[params::cTypeHumidity];
+        measures.mHealthIndex = dashbordData[params::cTypeHealthIndex];
     }
     return measures;
 }

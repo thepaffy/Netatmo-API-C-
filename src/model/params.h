@@ -107,6 +107,11 @@ const std::string cTypeGustAngle = "GustAngle";
 const std::string cTypeGustStrength = "GustStrength";
 
 /**
+ * Type health index.
+ */
+const std::string cTypeHealthIndex = "health_idx";
+
+/**
  * Type temperature trend.
  */
 const std::string cTypeTemperatureTrend = "temp_trend";

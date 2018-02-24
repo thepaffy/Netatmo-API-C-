@@ -132,6 +132,11 @@ struct Measures {
     double          mGustAngle;
 
     /**
+     * The health index value.
+     */
+    double          mHealthIndex;
+
+    /**
      * The minimum temperature value.
      */
     double          mMinTemperature;

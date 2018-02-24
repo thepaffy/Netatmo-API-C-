@@ -185,11 +185,12 @@ public:
 
     /**
      * This function logges in the user via the request token api.
+     * @param scope The scope for the api.
      * @throw LoginException Is thrown if the username, the password, the client id or the client secret is not set.
      * @throw CurlException Rethrown from get().
      * @throw ResponseException Rethrown from get().
      */
-    void login();
+    void login(const std::string &scope = std::string());
 
     /**
      * This function updates the session via the request token api.

@@ -60,6 +60,13 @@ std::string urlEncode(const std::string &toEncode);
 std::list<Station> parseDevices(const json &response);
 
 /**
+ * Parses the result of NAHCCApiClient::requestHomeCoachsData() into a list of Stations.
+ * @param response The json response from NAHCCApiClient::requestHomeCoachsData().
+ * @return A parsed list of Stations.
+ */
+std::list<Station> parseHCCDevices(const json &response);
+
+/**
  * Parses the dashboard data of a module into a measure
  * @param dashbordData The dashboard data of the module.
  * @param moduleType The type of the module.
