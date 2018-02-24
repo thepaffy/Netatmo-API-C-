@@ -19,11 +19,13 @@
 #ifndef MODULE_H
 #define MODULE_H
 
+#include "netatmoapi++_export.h"
 #include "measures.h"
 
 #include <memory>
 #include <string>
 #include <cstdint>
+#include <nlohmann/json.hpp>
 
 namespace netatmoapi {
 
@@ -34,7 +36,7 @@ namespace netatmoapi {
  * The class holds also informations about battery and wifi state.
  * Also the measures of the module are provided.
  */
-class Module {
+class NETATMOAPI___EXPORT Module {
 public:
     /**
      * Constructor.
@@ -45,6 +47,8 @@ public:
      * @param rfStatus The wifi status of the module.
      */
     explicit Module(const std::string &id, const std::string &moduleName, const std::string &type, std::uint16_t batteryVp, std::uint16_t batteryPercent, std::uint16_t rfStatus, std::uint32_t firmware);
+
+    explicit Module(const nlohmann::json &module);
 
     /**
      * Returns the name of the module.

@@ -16,33 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Netatmo-API-CPP.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SCOPEEXIT_HPP
-#define SCOPEEXIT_HPP
+#ifndef PARSING_P_H
+#define PARSING_P_H
 
-#include <utility>
+#include "model/measures.h"
+
+#include <vector>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 namespace netatmoapi {
 
-template <typename T>
-class ScopeExit {
-public:
-    ScopeExit(T &&t) :
-        mT(std::move(t))
-        {}
-    ~ScopeExit()
-    {
-        mT();
-    }
-private:
-    T mT;
-};
-
-template <typename T>
-ScopeExit<T> makeScopeExit(T &&t)
-{
-    return ScopeExit<T>(std::move(t));
-}
+std::vector<Measures::WindHistoric> parseWindHistoric(const json &jsonWindHistoric);
 
 }
 
-#endif /* SCOPEEXIT_HPP */
+#endif /* PARSING_P_H */

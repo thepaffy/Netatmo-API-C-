@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.5.0)
 
-project(netatmoapi++)
+project(netatmoapi++ LANGUAGES CXX)
+
+include(FeatureSummary)
+include(GenerateExportHeader)
+include(CTest)
+
+find_package(nlohmann_json REQUIRED)
+find_package(Doxygen)
 
 add_definitions(-std=c++14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
@@ -12,7 +19,6 @@ set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header fi
 set(INSTALL_DOC_DIR share/doc CACHE PATH "Installation directory for documentation files" FORCE)
 
 option(BUILD_EXAMPLES "Build examples." ON)
-option(BUILD_TESTS "Build tests." ON)
 
 add_subdirectory(src)
 
@@ -20,12 +26,11 @@ if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-if(BUILD_TESTS)
+if(BUILD_TESTING)
     add_subdirectory(tests)
 endif()
 
 # add a target to generate API documentation with Doxygen
-find_package(Doxygen)
 option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen)" ${DOXYGEN_FOUND})
 if(BUILD_DOCUMENTATION)
     if(NOT DOXYGEN_FOUND)
@@ -46,3 +51,5 @@ if(BUILD_DOCUMENTATION)
 
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/netatmo++-html DESTINATION ${INSTALL_DOC_DIR} OPTIONAL)
 endif()
+
+feature_summary(WHAT ALL)

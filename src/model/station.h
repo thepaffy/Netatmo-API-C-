@@ -19,6 +19,7 @@
 #ifndef STATION_H
 #define STATION_H
 
+#include "netatmoapi++_export.h"
 #include "module.h"
 #include "place.h"
 
@@ -26,6 +27,7 @@
 #include <string>
 #include <memory>
 #include <stdexcept>
+#include <nlohmann/json.hpp>
 
 namespace netatmoapi {
 
@@ -35,7 +37,7 @@ namespace netatmoapi {
  * The station has a id.
  * The class holds also all modules of a station.
  */
-class Station {
+class NETATMOAPI___EXPORT Station {
 public:
     /**
      * Constructor.
@@ -43,6 +45,8 @@ public:
      * @param id The station id (MAC-Address).
      */
     explicit Station(const std::string &id, const std::string &stationName, const std::string &moduleName, bool co2Calibrating, std::uint32_t firmware, std::uint64_t lastUpgrade, std::uint16_t wifiStatus);
+
+    explicit Station(const nlohmann::json &station);
 
     /**
      * Returns the name of the station,

@@ -19,21 +19,28 @@
 #ifndef PLACE_H
 #define PLACE_H
 
+#include "netatmoapi++_export.h"
+
 #include <cstdint>
 #include <string>
+#include <nlohmann/json.hpp>
 
 namespace netatmoapi {
 
-class Place {
+class NETATMOAPI___EXPORT Place {
 public:
     struct Location {
+        Location();
+        Location(const nlohmann::json &location);
         double latitude;
         double longitude;
     };
 
-    Place() = default;
+    Place();
 
-    explicit Place(std::uint32_t altitude, std::string &&city, std::string &&country, std::string &&timezone);
+    explicit Place(std::uint32_t altitude, const std::string &city, const std::string &country, const std::string &timezone);
+
+    explicit Place(const nlohmann::json &place);
 
     std::uint32_t altitude() const {
         return mAltitude;

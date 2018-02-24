@@ -16,8 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Netatmo-API-CPP.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef RESPONSEEXCEPTION_HPP
-#define RESPONSEEXCEPTION_HPP
+#ifndef CURLEXCEPTION_H
+#define CURLEXCEPTION_H
+
+#include "netatmoapi++_export.h"
 
 #include <exception>
 #include <string>
@@ -25,53 +27,43 @@
 namespace netatmoapi {
 
 /**
- * @brief This exception is thrown, if the response of the api contains a error value.
+ * @brief This exception is thrown if the curl perform method returns a error code.
  *
  * The error code is part of the what message.
  */
-class ResponseException: public std::exception {
+class NETATMOAPI___EXPORT CurlException: public std::exception {
 public:
     /**
      * Constructor
-     * @param what The what message.
-     * @param error The error code, returned via the api.
+     * @param what The waht message.
+     * @param code The error code returned from curl.
      */
-    ResponseException(const std::string &what, const std::string &error) :
-        mWhat(what),
-        mError(error) {
-    }
+    CurlException(const std::string &what, int code);
 
     /**
      * Constructor
      * @param what The what message.
-     * @param error The error code, returned via the api.
+     * @param code The error code returned from curl.
      */
-    ResponseException(const char *what, const std::string &error) :
-        mWhat(what),
-        mError(error) {
-    }
+    CurlException(const char *what, int code);
 
     /**
      * Returns the what message.
      * @return The what message.
      */
-    const char *what() const noexcept override {
-        return mWhat.c_str();
-    }
+    const char * what() const noexcept override;
 
     /**
-     * Returns the error code.
+     * Returns the error code from curl.
      * @return The error code.
      */
-    const char *error() const noexcept {
-        return mError.c_str();
-    }
+    int code() const noexcept;
 
 private:
     std::string mWhat;
-    std::string mError;
+    int mCode;
 };
 
 }
 
-#endif /* RESPONSEEXCEPTION_HPP */
+#endif /* CURLEXCEPTION_H */

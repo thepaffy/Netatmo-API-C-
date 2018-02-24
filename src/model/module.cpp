@@ -17,8 +17,10 @@
  * along with Netatmo-API-CPP.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "module.h"
+#include "core/parsing.h"
 
 using namespace std;
+using json = nlohmann::json;
 
 namespace netatmoapi {
 
@@ -36,6 +38,17 @@ Module::Module(const string &id, const string &moduleName, const string &type, u
     mBatteryPercent(batteryPercent),
     mRfStatus(rfStatus),
     mFirmware(firmware) {
+}
+
+Module::Module(const json &module) :
+    mId(module["_id"].get<json::string_t>()),
+    mModuleName(module["module_name"].get<json::string_t>()),
+    mType(module["type"].get<json::string_t>()),
+    mBatteryVp(module["battery_vp"]),
+    mBatteryPercent(module["battery_percent"]),
+    mRfStatus(module["rf_status"]),
+    mFirmware(module["firmware"]) {
+    mMeasures = parseMeasures(module["dashboard_data"], module["type"]);
 }
 
 void Module::setMeasures(Measures &&measures) {

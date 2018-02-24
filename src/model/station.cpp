@@ -17,13 +17,15 @@
  * along with Netatmo-API-CPP.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "station.h"
+#include "core/parsing.h"
 
 using namespace std;
+using json = nlohmann::json;
 
 namespace netatmoapi {
 
 
-Station::Station(const std::string &id, const std::string &stationName, const std::string &moduleName, bool co2Calibrating, std::uint32_t firmware, std::uint64_t lastUpgrade, std::uint16_t wifiStatus) :
+Station::Station(const string &id, const string &stationName, const string &moduleName, bool co2Calibrating, std::uint32_t firmware, std::uint64_t lastUpgrade, std::uint16_t wifiStatus) :
     mId(id),
     mStationName(stationName),
     mModuleName(moduleName),
@@ -31,6 +33,22 @@ Station::Station(const std::string &id, const std::string &stationName, const st
     mFirmware(firmware),
     mLastUpgrade(lastUpgrade),
     mWifiStatus(wifiStatus) {
+}
+
+Station::Station(const json &station) :
+    mId(station["_id"].get<json::string_t>()),
+    mStationName(station["station_name"].get<json::string_t>()),
+    mModuleName(station["module_name"].get<json::string_t>()),
+    mCo2Calibrating(station["co2_calibrating"]),
+    mFirmware(station["firmware"]),
+    mLastUpgrade(station["last_upgrade"]),
+    mWifiStatus(station["wifi_status"]),
+    mPlace(station["place"]) {
+    mMeasures =parseMeasures(station["dashboard_data"], station["type"]);
+    json modules = station["modules"];
+    for (const json &module: modules) {
+        mModules.emplace_back(module);
+    }
 }
 
 void Station::setModules(vector<Module> &&modules) {

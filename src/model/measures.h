@@ -19,6 +19,8 @@
 #ifndef MEASURES_H
 #define MEASURES_H
 
+#include "netatmoapi++_export.h"
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -28,7 +30,7 @@ namespace netatmoapi {
 /**
  * @brief Container for measures.
  */
-struct Measures {
+struct NETATMOAPI___EXPORT Measures {
     /**
      * @brief Struct for wind historic
      */
