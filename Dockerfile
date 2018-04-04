@@ -1,6 +1,6 @@
 FROM debian:stable
 
-LABEL Description="Gluon builder with Debain Jessie"
+LABEL Description="Gluon builder with Debain Stable"
 MAINTAINER Christian Paffhausen <mail@thepaffy.de>
 
 # set environment
@@ -13,6 +13,7 @@ RUN apt update && apt upgrade -y && apt-get install -y \
   cmake \
   doxygen \
   nlohmann-json-dev \
+  googletest \
   locales
 
 RUN locale-gen en_US.UTF-8
