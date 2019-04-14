@@ -9,7 +9,7 @@ include(CTest)
 find_package(nlohmann_json REQUIRED)
 find_package(Doxygen)
 
-add_definitions(-std=c++14)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 
 # Offer the user the choice of overriding the installation directories

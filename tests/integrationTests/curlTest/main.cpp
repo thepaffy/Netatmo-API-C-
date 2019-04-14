@@ -28,8 +28,8 @@ using namespace std;
 size_t writeCallback(char *buffer, size_t size, size_t nmemb, void *userp) {
     if (userp) {
         ostream *os = static_cast<ostream *>(userp);
-        streamsize len = size * nmemb;
-        if (os->write(static_cast<char *>(buffer), len)) {
+        size_t len = size * nmemb;
+        if (os->write(buffer, streamsize (len))) {
             return len;
         }
     }
@@ -42,22 +42,23 @@ TEST(CurlTest, getTest) {
     CURLcode res;
 
     string url = "http://httpbin.org/get?param1=key1&param2=key2";
-    ostringstream response;
+    stringstream rawResponse;
 
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);
-        curl_easy_setopt(curl, CURLOPT_FILE, &response);
+        curl_easy_setopt(curl, CURLOPT_FILE, &rawResponse);
         res = curl_easy_perform(curl);
         ASSERT_EQ(CURLE_OK, res);
         curl_easy_cleanup(curl);
     }
     curl_global_cleanup();
 
-    json jsonResponse = json::parse(response.str());
-    json args = jsonResponse["args"];
+    json response;
+    rawResponse >> response;
+    json args = response["args"];
 
     EXPECT_NE(args.find("param1"), args.end());
     string param1 = args["param1"];
@@ -74,14 +75,14 @@ TEST(CurlTest, postTest) {
 
     string url = "http://httpbin.org/post";
     string postField = "param1=key1&param2=key2";
-    ostringstream response;
+    stringstream rawResponse;
 
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);
-        curl_easy_setopt(curl, CURLOPT_FILE, &response);
+        curl_easy_setopt(curl, CURLOPT_FILE, &rawResponse);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postField.c_str());
         res = curl_easy_perform(curl);
         ASSERT_EQ(CURLE_OK, res);
@@ -89,8 +90,9 @@ TEST(CurlTest, postTest) {
     }
     curl_global_cleanup();
 
-    json jsonResponse = json::parse(response.str());
-    json form = jsonResponse["form"];
+    json response;
+    rawResponse >> response;
+    json form = response["form"];
 
     EXPECT_NE(form.find("param1"), form.end());
     string param1 = form["param1"];

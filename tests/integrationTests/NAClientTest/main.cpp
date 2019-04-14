@@ -17,33 +17,32 @@
  * along with Netatmo-API-CPP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "core/private/utils.h"
+#include "core/naclient.h"
 
 #include <gtest/gtest.h>
-#include <stdexcept>
+#include <cstdlib>
+#include <nlohmann/json.hpp>
 
-using namespace netatmoapi;
 using namespace std;
+using namespace netatmoapi;
 
-TEST(BuildQueryUrlTest, buildUrlQuery) {
-    map<string, string> params = {
-        { "key1", "value1" },
-        { "key2", "value2" },
-        { "key3", "value3" },
-    };
-    EXPECT_STREQ("key1=value1&key2=value2&key3=value3",
-                 buildUrlQuery(params, '&').c_str());
-    EXPECT_STREQ("key1=value1+key2=value2+key3=value3",
-                 buildUrlQuery(params, '+').c_str());
-    EXPECT_THROW(buildUrlQuery(params, '='), invalid_argument);
-    EXPECT_THROW(buildUrlQuery(params, ' '), invalid_argument);
+TEST(NAClientTest, loginTestFails) {
+    {
+        NAClient client{"", "", "", ""};
+        EXPECT_DEATH(client.login(), "");
+        EXPECT_FALSE(client.loggedIn());
+    }
+    {
+        NAClient client{"username", "password", "clientId", "clientSecret"};
+        client.login();
+        EXPECT_FALSE(client.loggedIn());
+    }
 }
 
-TEST(EncodeUrlTest, urlEncode) {
-    EXPECT_STREQ("https%3A%2F%2Fmax%3Amuster%40www.example.com%3A8080%2Findex.html%3Fp1%3DA%26p2%3DB%23ressource",
-                 urlEncode("https://max:muster@www.example.com:8080/index.html?p1=A&p2=B#ressource").c_str());
-    EXPECT_STREQ("thepaffy.de",
-                 urlEncode("thepaffy.de").c_str());
+TEST(NAClientTest, loginTestSuccessful) {
+    NAClient client{getenv("TEST_USERNAME"), getenv("TEST_PASSWORD"), getenv("TEST_CLIENTID"), getenv("TEST_CLIENTSECRET")};
+    client.login();
+    EXPECT_TRUE(client.loggedIn());
 }
 
 int main (int argc, char **argv) {

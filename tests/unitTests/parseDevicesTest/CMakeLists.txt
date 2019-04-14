@@ -1,18 +1,18 @@
-cmake_minimum_required(VERSION 3.5.0)
+include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PROJECT_BINARY_DIR}/src)
 
-project(parseDevicesTest)
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../../src)
-
-file(GLOB parseDevicesTest_SRCS
+set(parseDevicesTest_SRCS
     main.cpp
+    ${PROJECT_SOURCE_DIR}/src/core/parsing.cpp
+    ${PROJECT_SOURCE_DIR}/src/model/station.cpp
+    ${PROJECT_SOURCE_DIR}/src/model/module.cpp
+    ${PROJECT_SOURCE_DIR}/src/model/measures.cpp
+    ${PROJECT_SOURCE_DIR}/src/model/place.cpp
 )
 
-add_executable(${PROJECT_NAME} ${parseDevicesTest_SRCS})
+add_executable(parseDevicesTest ${parseDevicesTest_SRCS})
 
-target_link_libraries(${PROJECT_NAME}
-    netatmoapi++
+target_link_libraries(parseDevicesTest
     gtest
 )
 add_test(parseDevicesTest parseDevicesTest)

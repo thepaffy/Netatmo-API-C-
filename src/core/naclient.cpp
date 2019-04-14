@@ -75,6 +75,10 @@ NAClient::NAClient(const string &username, const string &password, const string 
 NAClient::~NAClient() = default;
 
 void NAClient::login() {
+    if (d->mIsLoggedIn) {
+        return;
+    }
+
     assert(!d->mUsername.empty());
     if (d->mUsername.empty()) {
         cerr << "Username not set.\n";
@@ -108,14 +112,14 @@ void NAClient::login() {
     try {
         response = post(NAClient::sUrlRequestToken, params);
     } catch (const CurlException &curlEx) {
-        cerr << "Received curl error in " << __FUNCTION__ << "\n";
+        cerr << "Received error from curl. Can't login.\n";
         cerr << "Curl code: " << curlEx.code() << "\n";
         cerr << "Aborting!\n";
         return;
     }
 
     if (response.find("error") != response.end()) {
-        handleError(response["error"], __FUNCTION__);
+        handleError(response["error"]);
         return;
     }
 
@@ -125,12 +129,11 @@ void NAClient::login() {
     d->mIsLoggedIn = true;
 }
 
-bool NAClient::loggedIn() const
-{
+bool NAClient::loggedIn() const {
     return d->mIsLoggedIn;
 }
 
-json NAClient::requestGet(const string &url, std::map<string, string> &params) {
+json NAClient::requestGet(const string &path, std::map<string, string> &params) {
     assert(d->mIsLoggedIn);
     if(!d->mIsLoggedIn) {
         cerr << "Client is not logged in.\n";
@@ -141,22 +144,18 @@ json NAClient::requestGet(const string &url, std::map<string, string> &params) {
         updateSession();
     }
 
+    string url = sUrlBase;
+    if (path.front() != '/'){
+        url.push_back('/');
+    }
+    url += path;
+
     params.emplace("access_token", d->mAccessToken);
 
-    json response;
-    try {
-        response = get(url, params);
-    } catch (const CurlException &curlEx) {
-        cerr << "Received curl error in " << __FUNCTION__ << "\n";
-        cerr << "Curl code: " << curlEx.code() << "\n";
-        cerr << "Aborting!\n";
-        return json{};
-    }
-
-    return  response;
+    return get(url, params);
 }
 
-json NAClient::requestPost(const string &url, std::map<string, string> &params) {
+json NAClient::requestPost(const string &path, std::map<string, string> &params) {
     assert(d->mIsLoggedIn);
     if(!d->mIsLoggedIn) {
         cerr << "Client is not logged in.\n";
@@ -167,19 +166,15 @@ json NAClient::requestPost(const string &url, std::map<string, string> &params) 
         updateSession();
     }
 
+    string url = sUrlBase;
+    if (path.front() != '/') {
+        url.push_back('/');
+    }
+    url += path;
+
     params.emplace("access_token", d->mAccessToken);
 
-    json response;
-    try {
-        response = post(url, params);
-    } catch (const CurlException &curlEx) {
-        cerr << "Received curl error in " << __FUNCTION__ << "\n";
-        cerr << "Curl code: " << curlEx.code() << "\n";
-        cerr << "Aborting!\n";
-        return json{};
-    }
-
-    return response;
+    return post(url, params);
 }
 
 void NAClient::updateSession() {
@@ -201,7 +196,7 @@ void NAClient::updateSession() {
     try {
         response = post(NAClient::sUrlRequestToken, params);
     } catch (const CurlException &curlEx) {
-        cerr << "Received curl error in " << __FUNCTION__ << "\n";
+        cerr << "Received curl error. Can't update the sesion.\n";
         cerr << "Curl code: " << curlEx.code() << "\n";
         cerr << "Aborting!\n";
         logout();
@@ -209,7 +204,7 @@ void NAClient::updateSession() {
     }
 
     if (response.find("error") != response.end()) {
-        handleError(response["error"], __FUNCTION__);
+        handleError(response["error"]);
         logout();
         return;
     }
@@ -284,14 +279,14 @@ json NAClient::post(const string &url, const std::map<string, string> &params) {
     return response;
 }
 
-void NAClient::handleError(const json &error, const string &function)
+void NAClient::handleError(const json &error)
 {
     if (error.is_string()) {
-        cerr << "Received OAuth error in " << function << "\n";
+        cerr << "Received OAuth error.\n";
         cerr << "Error message: " << error << "\n";
     }
     if (error.is_object()) {
-        cerr << "Received API error in " << function << "\n";
+        cerr << "Received API error.\n";
         cerr << "Error message: " << error["message"] << "\n";
     }
 }

@@ -1,17 +1,13 @@
-cmake_minimum_required(VERSION 3.5.0)
+include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PROJECT_BINARY_DIR}/src)
 
-project(curlTest)
-find_package(nlohmann_json)
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-file(GLOB curlTest_SRCS
+set(curlTest_SRCS
     main.cpp
 )
 
-add_executable(${PROJECT_NAME} ${curlTest_SRCS})
+add_executable(curlTest ${curlTest_SRCS})
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(curlTest
     gtest
     curl
 )

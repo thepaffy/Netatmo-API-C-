@@ -37,26 +37,12 @@ namespace netatmoapi {
 struct NAClientPrivate;
 
 /**
- * @brief This class handels the common part of the netatmo api.
- *
- * The class holds all necessary properties, like username, password,
- * client id, client secret, access token, refresh token and refresh
- * token expire time for communication with the netatmo api.
- *
- * The username and password are the users natamo account credentials.
- * The client id and the client secret are the app developers
- * parameters from https://dev.netatmo.com
- *
- * The access token, the refresh token and the expire time are returnd
- * from the netatmo request token api. They are set, if the login() or
- * updateSession() function is called. It's not recommended to set
- * these values via the set functions. These functions are provided, e.g.
- * to write and read this three properties from or to disk.
+ * @brief This class handels the server sesion of the netatmo api.
  */
 class NETATMOAPI___EXPORT NAClient {
 public:
     /**
-     * Constructor with initialization of all credential values.
+     * Constructs a netatmo client with all credential values.
      * @param username The users username.
      * @param password The users password.
      * @param clientId The app developers client id.
@@ -64,27 +50,26 @@ public:
      */
     explicit NAClient(const std::string &username, const std::string &password, const std::string &clientId, const std::string &clientSecret);
 
+    /**
+     * Default destructor.
+     */
     virtual ~NAClient();
 
     /**
-     * This function logges in the user via the request token api.
-     * @throw CurlException Rethrown from get().
-     * @throw ResponseException Rethrown from get().
+     * Login function for the client.
+     * Must be called before further operations.
      */
     void login();
 
+    /**
+     * Returns the logged in status of the client.
+     * @return The logged in status.
+     */
     bool loggedIn() const;
 
-    nlohmann::json requestGet(const std::string &url, std::map<std::string, std::string> &params);
+    nlohmann::json requestGet(const std::string &path, std::map<std::string, std::string> &params);
 
-    nlohmann::json requestPost(const std::string &url, std::map<std::string, std::string> &params);
-
-    /**
-     * The base netatmo api url.
-     *
-     * Value: "https://api.netatmo.net"
-     */
-    static const std::string sUrlBase;
+    nlohmann::json requestPost(const std::string &path, std::map<std::string, std::string> &params);
 
 private:
     void updateSession();
@@ -109,7 +94,14 @@ private:
      */
     nlohmann::json post(const std::string &url, const std::map<std::string, std::string> &params);
 
-    void handleError(const nlohmann::json &error, const std::string &function);
+    void handleError(const nlohmann::json &error);
+
+    /**
+     * The base netatmo api url.
+     *
+     * Value: "https://api.netatmo.net"
+     */
+    static const std::string sUrlBase;
 
     /**
      * The request token api url.

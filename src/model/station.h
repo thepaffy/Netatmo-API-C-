@@ -33,29 +33,40 @@ namespace netatmoapi {
 
 /**
  * @brief This class represents a netatmo weather station.
- *
- * The station has a id.
- * The class holds also all modules of a station.
  */
 class NETATMOAPI___EXPORT Station {
 public:
     /**
-     * Constructor.
-     * @param name The station name.
+     * Constructs a station instance by all station parameters.
      * @param id The station id (MAC-Address).
+     * @param stationName The station name.
+     * @param moduleName The module name of the main module.
+     * @param co2Calibrating The CO2 calibrating state.
+     * @param firmware The firmware version.
+     * @param lastUpgrade The last upgrade date.
+     * @param wifiStatus The wifi status of the station.
      */
     explicit Station(const std::string &id, const std::string &stationName, const std::string &moduleName, bool co2Calibrating, std::uint32_t firmware, std::uint64_t lastUpgrade, std::uint16_t wifiStatus);
 
+    /**
+     * Constructs a station instance by a json node.
+     * The constructor pareses the json node and initialize the station with all sub classes.
+     * @param station The json node for the station.
+     */
     explicit Station(const nlohmann::json &station);
 
     /**
-     * Returns the name of the station,
-     * @return The name.
+     * Returns the name of the station.
+     * @return The station name.
      */
     const std::string &stationName() const {
         return mStationName;
     }
 
+    /**
+     * Returns the name of the module.
+     * @return The module name.
+     */
     const std::string &moduleName() const {
         return mModuleName;
     }
@@ -68,18 +79,34 @@ public:
         return mId;
     }
 
+    /**
+     * Returns the stations CO2 calibrating state.
+     * @return The CO2 calibrating state.
+     */
     bool co2Calibrating() const {
         return mCo2Calibrating;
     }
 
+    /**
+     * Returns the stations firmware version of the station.
+     * @return The firmware version.
+     */
     std::uint32_t firmware() const {
         return mFirmware;
     }
 
+    /**
+     * Returns the last firmware upgrade timestamp of the station.
+     * @return The last firmware upgradetimestamp.
+     */
     std::uint64_t lastUpgrade() const {
         return mLastUpgrade;
     }
 
+    /**
+     * Returns the wifi status of the station.
+     * @return The wifi status.
+     */
     std::uint16_t wifiStatus() const {
         return mWifiStatus;
     }
@@ -94,26 +121,42 @@ public:
 
     /**
      * Sets the modules of the station.
-     * @param modules A std::list with all [Modules](@ref netatmoapi::Module) for the Station.
+     * @param modules A std::vector with all [Modules](@ref netatmoapi::Module) for the Station. The parameter will be moved.
      */
     void setModules(std::vector<Module> &&modules);
 
     /**
      * Add a module to the station.
-     * @param module The Module.
+     * @param module A [Module](@ref netatmoapi::Module) for the station. The parameter will be moved.
      */
     void addModule(Module &&module);
 
+    /**
+     * Returns the stations main module measures.
+     * @return The [Measures](@ref netatmoapi::Measures) of the stations main module.
+     */
     const Measures &measures() const {
         return mMeasures;
     }
 
+    /**
+     * Sets the stations main module measures.
+     * @param measures The [Measures](@ref netatmoapi::Measures) of the stations main module. The parameter will be moved.
+     */
     void setMeasures(Measures &&measures);
 
+    /**
+     * Returns the stations place.
+     * @return The [Place](@ref netatmoapi::Place) of the station.
+     */
     const Place &place() const {
         return mPlace;
     }
 
+    /**
+     * Sets the stations place.
+     * @param place The [Place](@ref netatmoapi::Place) of the station. The parameter will be moved.
+     */
     void setPlace(Place &&place);
 
 private:

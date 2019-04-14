@@ -31,28 +31,31 @@ namespace netatmoapi {
 
 /**
  * @brief This class represents a netatmo module.
- *
- * The module has a name, a id and type.
- * The class holds also informations about battery and wifi state.
- * Also the measures of the module are provided.
  */
 class NETATMOAPI___EXPORT Module {
 public:
     /**
-     * Constructor.
-     * @param name The module name.
+     * Constructs a module instance by all module parameters.
      * @param id The module id (MAC-Address).
+     * @param moduleName The module name.
      * @param type The module type.
-     * @param batteryPercent The battery status of the module.
-     * @param rfStatus The wifi status of the module.
+     * @param batteryVp Current battery status per module.
+     * @param batteryPercent Current battery status per module in percent.
+     * @param rfStatus The radio status of the module.
+     * @param firmware The current firmware version of the module.
      */
     explicit Module(const std::string &id, const std::string &moduleName, const std::string &type, std::uint16_t batteryVp, std::uint16_t batteryPercent, std::uint16_t rfStatus, std::uint32_t firmware);
 
+    /**
+     * Constructs a module instance by a json node.
+     * The constructor parses the json node and initialize the module with all sub classes.
+     * @param module The json module for the module.
+     */
     explicit Module(const nlohmann::json &module);
 
     /**
      * Returns the name of the module.
-     * @return The name.
+     * @return The module name.
      */
     const std::string &moduleName() const {
         return mModuleName;
@@ -77,44 +80,52 @@ public:
         return mType;
     }
 
+    /**
+     * Returns the current battery status per module.
+     * @return The barrery state.
+     */
     std::uint16_t batteryVp() const {
         return mBatteryVp;
     }
 
     /**
-     * Returns the battery state of the module.
-     * @return The barrery state.
+     * Returns the current battery status per module in percent.
+     * @return The barrery state in percent.
      */
     std::uint16_t batteryPercent() const {
         return mBatteryPercent;
     }
 
     /**
-     * Returns the rf state of the module.
+     * Returns the radio status of the module.
      *
      * A small value indicates a good rf signal.
      *
-     * @return The rf state.
+     * @return The radio status.
      */
     std::uint16_t rfStatus() const {
         return mRfStatus;
     }
 
+    /**
+     *Retruns the current firmware version of the module.
+     * @return The current firmware version.
+     */
     std::uint32_t firmware() const {
         return mFirmware;
     }
 
     /**
      * Returns the measures of the module.
-     * @return The measures.
+     * @return The [Measures](@ref netatmoapi::Measures) of the module.
      */
     const Measures &measures() const {
         return mMeasures;
     }
 
     /**
-     * Sets the measures of the module.
-     * @param measures
+     * Sets the modules measures.
+     * @param measures The [Measures](@ref netatmoapi::Measures) of the module. The parameter will be moved.
      */
     void setMeasures(Measures &&measures);
 

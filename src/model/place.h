@@ -27,6 +27,9 @@
 
 namespace netatmoapi {
 
+/**
+ * @brief This class represents a netatmo place.
+ */
 class NETATMOAPI___EXPORT Place {
 public:
     struct Location {

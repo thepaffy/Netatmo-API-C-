@@ -16,6 +16,7 @@ set(netatmoapi_SRCS
     model/measures.cpp
     model/place.cpp
     exceptions/curlexception.cpp
+    exceptions/naapiexception.cpp
 )
 
 set(netatmoapi_core_HDRS
@@ -40,6 +41,7 @@ set(netatmoapi_model_HDRS
 
 set(netatmoapi_exceptions_HDRS
     exceptions/curlexception.h
+    exceptions/naapiexception.h
 )
 
 add_library(${PROJECT_NAME} SHARED ${netatmoapi_SRCS} ${netatmoapi_core_HDRS} ${netatmoapi_core_private_HDRS} ${netatmoapi_model_HDRS} ${netatmoapi_exceptions_HDRS})

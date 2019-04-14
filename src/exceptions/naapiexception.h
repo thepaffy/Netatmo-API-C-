@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Netatmo-API-CPP.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef CURLEXCEPTION_H
-#define CURLEXCEPTION_H
+#ifndef NAAPIEXCEPTION_H
+#define NAAPIEXCEPTION_H
 
 #include "netatmoapi++_export.h"
 
@@ -26,42 +26,25 @@
 
 namespace netatmoapi {
 
-/**
- * @brief This exception is thrown if the curl perform method returns a error code.
- */
-class NETATMOAPI___EXPORT CurlException: public std::exception {
+class NETATMOAPI___EXPORT NAApiException: public std::exception {
 public:
-    /**
-     * Constructor
-     * @param what The waht message.
-     * @param code The error code returned from curl.
-     */
-    CurlException(const std::string &what, int code);
+    enum Reason {
 
-    /**
-     * Constructor
-     * @param what The what message.
-     * @param code The error code returned from curl.
-     */
-    CurlException(const char *what, int code);
+    };
 
-    /**
-     * Returns the what message.
-     * @return The what message.
-     */
+    NAApiException(const std::string &what, Reason reason);
+
+    NAApiException(const char *what, Reason reason);
+
     const char * what() const noexcept override;
 
-    /**
-     * Returns the error code from curl.
-     * @return The error code.
-     */
-    int code() const noexcept;
+    Reason reason() const noexcept;
 
 private:
     std::string mWhat;
-    int mCode;
+    Reason mReason;
 };
 
 }
 
-#endif /* CURLEXCEPTION_H */
+#endif /* NAAPIEXCEPTION_H */

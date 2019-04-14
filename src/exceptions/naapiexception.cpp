@@ -16,34 +16,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Netatmo-API-CPP.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "nawsapi.h"
-
-#include <iostream>
+#include "naapiexception.h"
 
 using namespace std;
-using json = nlohmann::json;
 
 namespace netatmoapi {
 
-json requestStationsData(NAClient &naClient, const string &deviceId, bool getFavorites) {
-    map<string, string> params;
+NAApiException::NAApiException(const std::string &what, Reason reason) :
+    mWhat(what),
+    mReason(reason) {
+}
 
-    if (!deviceId.empty()) {
-        params.emplace("device_id", deviceId);
-    }
-    if (getFavorites) {
-        params.emplace("get_favorites", "true");
-    }
+NAApiException::NAApiException(const char *what, Reason reason) :
+    mWhat(what),
+    mReason(reason) {
+}
 
-    try {
-        return naClient.requestGet("/api/getstationsdata", params);
-    } catch (const exception &ex) {
-#if !defined(NDEBUG)
-        cerr << "Error received in file: " << __FILE__ << ", function: " << __FUNCTION__ << ", in line: " << __LINE__ << "\n";
-        cerr << "Error: " << ex.what() << "\n";
-#endif
-        throw;
-    }
+const char * NAApiException::what() const noexcept {
+    return mWhat.c_str();
+}
+
+NAApiException::Reason NAApiException::reason() const noexcept {
+    return mReason;
 }
 
 }
